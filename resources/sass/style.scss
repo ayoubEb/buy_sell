@@ -1,0 +1,92 @@
+@import "_variables.scss";
+.btn-customize{
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  font-weight   : 500;
+  padding       : .5rem 2rem;
+  font-size     : 12px;
+}
+.btn-brown{
+  @extend .btn-customize;
+  background: $color-brown !important;
+  color: white !important;
+}
+.btn-vert{
+  @extend .btn-customize;
+  background: $color-vert!important;
+  color: white !important;
+}
+.btn-orange{
+  @extend .btn-customize;
+  background: $color-orange !important;
+  color: white !important;
+}
+.btn-darkLight{
+  @extend .btn-customize;
+  background: $color-darkLight !important;
+  color: white !important;
+}
+label{
+  text-transform: uppercase;
+  // color: black;
+  font-size: smaller;
+  letter-spacing: 1px;
+}
+.form-control,.form-select , .form-check-input{
+  border: 1px solid rgb(211, 207, 207) !important;
+  box-shadow: none !important;
+
+}
+.title{
+  color: $color-brown;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: .5px;
+}
+
+
+// #side-menu
+// {
+//   li{
+//     &>a{
+//       color: black !important;
+//       text-transform: uppercase !important;
+//       // font-weight: 500;
+//       // font-size: 13px !important;
+//     }
+//   }
+// }
+table.info{
+  tbody{
+    td{
+      font-weight   : 500;
+      // color         : black;
+      text-transform: uppercase;
+      font-size     : smaller;
+      letter-spacing: .5px;
+    }
+    tr td:nth-child(1){
+      background-color: rgba($color: $color-vert, $alpha: .2);
+    }
+  }
+}
+.table-customize{
+  thead
+  {
+    th{
+      background-color: rgba($color: $color-orange, $alpha: .5);
+      padding-top     : .6rem;
+      padding-bottom  : .6rem;
+      text-transform  : uppercase;
+      letter-spacing  : .3px;
+      font-weight     : bold;
+      font-size       : smaller;
+    }
+  }
+  tbody{
+    td{
+      padding-top: .55rem;
+      padding-bottom: .55rem;
+    }
+  }
+}
