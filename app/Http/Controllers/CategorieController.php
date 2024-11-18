@@ -82,56 +82,44 @@ class CategorieController extends Controller
 // }
 
 // $conn->close();
-Config::set('database.connections.mysql', [
-  'driver' => 'mysql',
-  'host' => '127.0.0.1',
-  'port' => '3306',
-  'database' => 'db',
-  'username' => 'dynamic_user',
-  'password' => 'dynamic_password',
-  'charset' => 'utf8mb4',
-  'collation' => 'utf8mb4_unicode_ci',
-  'prefix' => '',
-  'strict' => true,
-  'engine' => null,
-]);
+
 
 
 // Set the default connection
-Config::set('database.default', 'mysql');
-    // $request->validate([
-    //   "nom" => ["required","unique:categories,nom"],
-    //   "img"=>["nullable","unique:categories,image"],
-    // ]);
 
-    // if($request->hasFile("img")){
-    //   $destination_path = 'public/images/category/';
-    //   $image_produit    = $request->file("img");
-    //   $filename         = $image_produit->getClientOriginalName();
-    //   $img_ex           = DB::table("categories")->where("image",$filename)->exists();
-    //   $c                = DB::table("categories")->where("image",$filename)->count();
-    //   $resu             = $filename;
-    //   if($img_ex == true)
-    //   {
-    //     $resu = ($c + 1). '-' . $filename;
-    //     $request->file("img")->storeAs($destination_path,$filename .'( ' . $c + 1 . ')');
-    //   }
-    //   else
-    //   {
-    //     $resu = $filename;
-    //     $request->file("img")->storeAs($destination_path,$filename);
+    $request->validate([
+      "nom" => ["required","unique:categories,nom"],
+      "img"=>["nullable","unique:categories,image"],
+    ]);
 
-    //   }
-    // }
-    // Categorie::create([
-    //   "nom"         => $request->nom,
-    //   "description" => $request->description,
-    //   "image"=>$resu ?? '',
-    // ]);
+    if($request->hasFile("img")){
+      $destination_path = 'public/images/category/';
+      $image_produit    = $request->file("img");
+      $filename         = $image_produit->getClientOriginalName();
+      $img_ex           = DB::table("categories")->where("image",$filename)->exists();
+      $c                = DB::table("categories")->where("image",$filename)->count();
+      $resu             = $filename;
+      if($img_ex == true)
+      {
+        $resu = ($c + 1). '-' . $filename;
+        $request->file("img")->storeAs($destination_path,$filename .'( ' . $c + 1 . ')');
+      }
+      else
+      {
+        $resu = $filename;
+        $request->file("img")->storeAs($destination_path,$filename);
+
+      }
+    }
+    Categorie::create([
+      "nom"         => $request->nom,
+      "description" => $request->description,
+      "image"=>$resu ?? '',
+    ]);
 
 
-    //   Session()->flash("success","L'enregistrement du catégorie effectuée");
-    //   return redirect()->route('categorie.index');
+      Session()->flash("success","L'enregistrement du catégorie effectuée");
+      return redirect()->route('categorie.index');
   }
 
   /**
