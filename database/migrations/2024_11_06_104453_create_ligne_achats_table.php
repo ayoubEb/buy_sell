@@ -21,7 +21,6 @@ return new class extends Migration
             $table->foreignIdFor(Entreprise::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('num_achat')->unique()->nullable();
             $table->string('statut')->nullable();
-            $table->string('etat_paiement')->nullable();
             $table->double('ht')->default(0);
             $table->double('ttc')->default(0);
             $table->double('net_payer')->default(0);
@@ -29,10 +28,12 @@ return new class extends Migration
             $table->integer('nombre_achats')->default(0);
             $table->date('date_achat')->nullable();
             $table->date('dateCreation')->nullable();
+            $table->date('datePaiement')->nullable();
             $table->double('payer')->default(0);
             $table->double('mt_tva')->default(0);
             $table->double('reste')->default(0);
             $table->string('mois')->nullable();
+            $table->text('commentaire')->nullable();
             $table->datetime("deleted_at")->nullable();
             $table->timestamps();
         });

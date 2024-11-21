@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(Categorie::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('reference')->unique()->nullable();
             $table->string('designation')->nullable();
-            $table->string('status')->nullable();
+            $table->boolean('statut')->nullable();
             $table->text('description')->nullable();
             $table->double('prix_achat')->default(0);
             $table->double('prix_vente')->default(0);

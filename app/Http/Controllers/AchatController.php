@@ -32,8 +32,6 @@ class AchatController extends Controller
   public function store(Request $request)
   {
     $ligne     = LigneAchat::find($request->ligne_id);;
-    $first_day = Carbon::createFromFormat('Y-m-d', $ligne->date_achat)->startOfMonth()->toDateString();
-    $end_day   = Carbon::createFromFormat('Y-m-d', $ligne->date_achat)->endOfMonth()->toDateString();
     foreach($request->pro as $row => $val)
     {
       $remise_pro = $request->remise[$row] > 0 ? $request->remise[$row] : 0;

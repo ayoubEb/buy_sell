@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -34,6 +35,15 @@ class VentePaiement extends Model
   }
 
 
+  /**
+   * Get the cheque associated with the VentePaiement
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\HasOne
+   */
+  public function cheque(): HasOne
+  {
+      return $this->hasOne(VenteCheque::class, 'vente_paiement_id', 'id');
+  }
 
 
   public function getActivitylogOptions(): LogOptions

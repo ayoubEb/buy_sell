@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categorie;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
-use mysqli;
-use PDF;
+
 class CategorieController extends Controller
 {
     /**
@@ -60,32 +61,40 @@ class CategorieController extends Controller
    */
   public function store(Request $request)
   {
+    // $this->setEnvValue('DB_DATABASE', 'buy_sell');
+    // DB::purge('mysql');
+    // DB::reconnect('mysql');
+    // $this->setEnvValue('APP_NAME', 'buySell');
+    // Artisan::call('config:clear');
+    // Artisan::call('config:cache');
+    // return view("auth.login");
 
-//     $servername = "localhost";
-// $username = "root";
-// $password = "";
+    //     $servername = "localhost";
+    // $username = "root";
+    // $password = "";
 
-// // Create connection
-// $conn = new mysqli($servername, $username, $password);
-// // Check connection
-// if ($conn->connect_error) {
-//   die("Connection failed: " . $conn->connect_error);
-// }
+    // // Create connection
+    // $conn = new mysqli($servername, $username, $password);
+    // // Check connection
+    // if ($conn->connect_error) {
+    //   die("Connection failed: " . $conn->connect_error);
+    // }
 
-// // Create database
-// $d = "my";
-// $sql = "CREATE DATABASE " . $d;
-// if ($conn->query($sql) === TRUE) {
-//   echo "Database created successfully";
-// } else {
-//   echo "Error creating database: " . $conn->error;
-// }
+    // // Create database
+    // $d = "my";
+    // $sql = "CREATE DATABASE " . $d;
+    // if ($conn->query($sql) === TRUE) {
+    //   echo "Database created successfully";
+    // } else {
+    //   echo "Error creating database: " . $conn->error;
+    // }
 
-// $conn->close();
+    // $conn->close();
 
-
-
-// Set the default connection
+        // $defaultCongig = config('database.connections.mysql')
+    // DB::reconnect('tst');
+    // dd($my_config);
+    // Set the default connection
 
     $request->validate([
       "nom" => ["required","unique:categories,nom"],
@@ -199,12 +208,37 @@ class CategorieController extends Controller
       return back();
   }
 
+
+  function setEnvValue($key, $value)
+{
+    $path = base_path('.env');
+
+    if (file_exists($path)) {
+        $content = file_get_contents($path);
+
+        // Replace existing key-value pair or add a new one
+        if (strpos($content, "{$key}=") !== false) {
+            $content = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $content);
+        } else {
+            $content .= "\n{$key}={$value}";
+        }
+
+        file_put_contents($path, $content);
+
+        // Clear config cache to apply changes
+
+
+    }
+}
+
+
+
   public function document(){
     $categories = Categorie::all();
     $data = [
       "categories" => $categories
     ];
-    $pdf = PDF::loadView('categories.document', $data);
+    $pdf = Pdf::loadView('categories.document', $data);
     return $pdf->stream();
   }
 }

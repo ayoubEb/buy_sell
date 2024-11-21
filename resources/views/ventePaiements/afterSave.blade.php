@@ -96,6 +96,98 @@
           </div>
         </div>
 
+        <div class="row {{ $ventePaiement->type_paiement == 'chèque' ? "row-cols-2" : "row-cols-1" }}">
+          @if ($ventePaiement->type_paiement == "chèque")
+          <div class="col">
+            <h6 class="title mb-2">
+              info chèque
+            </h6>
+            <div class="table-responsive">
+              <table class="table table-bordered info m-0">
+                <tbody>
+                  <tr>
+                    <td class="align-middle">
+                      numéro
+                    </td>
+                    <td class="align-middle">
+                      {{ $ventePaiement->cheque && $ventePaiement->cheque->numero != '' ? $ventePaiement->cheque->numero : ''}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="align-middle">
+                      banque
+                    </td>
+                    <td class="align-middle">
+                      {{ $ventePaiement->cheque && $ventePaiement->cheque->banque != '' ? $ventePaiement->cheque->banque : ''}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="align-middle">
+                      date
+                    </td>
+                    <td class="align-middle">
+                      {{ $ventePaiement->cheque && $ventePaiement->cheque->date_cheque != '' ? $ventePaiement->cheque->date_cheque : ''}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="align-middle">
+                      date enquisement
+                    </td>
+                    <td class="align-middle">
+                      {{ $ventePaiement->cheque && $ventePaiement->cheque->date_enquisement != '' ? $ventePaiement->cheque->date_enquisement : ''}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          @endif
+          <div class="col">
+            <h6 class="title mb-2">
+              résume
+            </h6>
+            <div class="table-responsive">
+              <table class="table table-bordered info m-0">
+                <tbody>
+                  <tr>
+                    <td class="align-middle">
+                      numéro
+                    </td>
+                    <td class="align-middle">
+                      {{ $ventePaiement->num }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="align-middle">
+                      numéro opération
+                    </td>
+                    <td class="align-middle">
+                      {{ $ventePaiement->numero_operation }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="align-middle">
+                      date
+                    </td>
+                    <td class="align-middle">
+                      {{ $ventePaiement->created_at }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="align-middle">
+                      montant à payer
+                    </td>
+                    <td class="align-middle">
+                      {{ number_format($ventePaiement->payer , 2 , "," ," ") }} dh
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
         <div class="row justify-content-center">
           <div class="col-lg-6">
             <div class="mt-2 bg-vert-light py-3 border-2 border-solid border-primary border-rounded">

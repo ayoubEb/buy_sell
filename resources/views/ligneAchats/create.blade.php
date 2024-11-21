@@ -56,6 +56,15 @@
                 @enderror
               </div>
             </div>
+            <div class="col mb-2">
+              <div class="form-group">
+                <label for="" class="form-label">Date paiement</label>
+                <input type="date" name="datePaiement" class="form-control @error('datePaiement') is-invalid @enderror" value="{{ old("datePaiement") == '' ? date('Y-m-d') : old('datePaiement') }}">
+                @error('datePaiement')
+                  <strong class="invalid-feedback">{{ $message }}</strong>
+                @enderror
+              </div>
+            </div>
 
             <div class="col mb-2">
               <div class="form-group">

@@ -1,15 +1,57 @@
 @extends('layouts.master')
 @section('content')
-<div class="row">
-  <div class="col-12">
-      <div class="page-title-box d-flex align-items-center justify-content-between">
-          <h4 class="page-title mb-0 font-size-18">produit : {{ $produit->reference }} </h4>
-      </div>
-  </div>
-</div>
-
 <div class="card">
   <div class="card-body p-2">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h6 class="title m-0">
+        produit : {{ $produit->reference }}
+      </h6>
+      <div class="">
+          @can("produit-modification")
+            <a href="{{ route('produit.edit',$produit) }}" class="btn btn-brown waves-effect waves-light px-3">
+          <span class="mdi mdi-pencil-outline mdi-18px"></span>
+            </a>
+          @endcan
+          @can("produit-suppression")
+          <button type="button" class="btn btn-brown px-3 waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#delete{{ $produit->id }}">
+            <i class="mdi mdi-trash-can-outline mdi-18px"></i>
+          </button>
+          <div class="modal fade" id="delete{{ $produit->id }}" tabindex="-1" aria-labelledby="varyingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <div class="d-flex justify-content-center">
+                    <span class="mdi mdi-trash-can-outline mdi-48px text-danger"></span>
+                  </div>
+                  <form action="{{ route('produit.destroy',$produit) }}" method="POST">
+                    @csrf
+                    @method("DELETE")
+                    <h3 class="text-primary mb-3 text-center">Confirmer la suppression</h3>
+                    <h6 class="fw-bolder text-center text-muted">
+                      Voulez-vous vraiment déplacer du produit vers la corbeille
+                    </h6>
+                    <h6 class="text-danger my-3 text-center">{{ $produit->designation }}</h6>
+                    <div class="row justify-content-center">
+                      <div class="col-lg-5">
+                        <button type="submit" class="btn btn-vert waves-effect waves-light me-2 py-2 w-100">
+                          Je confirme
+                        </button>
+                      </div>
+                      <div class="col-lg-5">
+                        <button type="button" class="btn btn-orange waves-effect waves-light px-4 w-100" data-bs-dismiss="modal" aria-label="btn-close">
+                          Annuler
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          @endcan
+      </div>
+    </div>
+
     <ul class="nav nav-tabs" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" data-bs-toggle="tab" href="#info" role="tab">information</a>
@@ -139,7 +181,7 @@
                       {{ $produit->quantite }}
                     </td>
                   </tr>
-                  
+
                   <tr>
                     <td class="align-middle">
                       quantité augmenter

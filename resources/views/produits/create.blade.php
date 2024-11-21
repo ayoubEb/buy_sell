@@ -84,6 +84,14 @@
             </div>
             <div class="col">
               <div class="form-group mb-2">
+                <label for="" class="form-label">statut</label>
+                <select name="statut" id="" class="form-select">
+                  <option value="">-- choisir le statut--</option>
+                  <option value="1">Activé</option>
+                  <option value="0">Desactuvé</option>
+                </select>
+              </div>
+              <div class="form-group mb-2">
                 <label for="" class="form-label">Image</label>
                 <input type="file" name="img" id="fileImg" class="form-control mb-2">
               </div>

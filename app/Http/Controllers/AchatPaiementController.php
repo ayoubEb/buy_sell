@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AchatCheque;
 use App\Models\AchatPaiement;
 use App\Models\Entreprise;
 use App\Models\Fournisseur;
@@ -11,6 +12,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+
 class AchatPaiementController extends Controller
 {
   function __construct()
@@ -35,8 +38,6 @@ class AchatPaiementController extends Controller
     return view("achatPaiements.index",$all);
   }
 
-
-
   /**
    * Store a newly created resource in storage.
    *
@@ -47,38 +48,55 @@ class AchatPaiementController extends Controller
   {
     $ligne = LigneAchat::where("id",request("ligne_achat_id"))->first();
 
-      $max   = $ligne->reste;
+    $max   = $ligne->reste;
+    $request->validate([
+      "payer" => ["required","numeric","max:" . $max],
+      "type"  => ["required"]
+    ]);
+
+
+    $numero = Str::random(6);
+    /**
+     * ? save achat paiement
+    */
+
+    $count = DB::table("achat_paiements")->count() + 1;
+
+    $achat_paiement = AchatPaiement::create([
+      "numero_operation" => Str::upper($numero),
+      "ligne_achat_id"   => $ligne->id,
+      "num"              => "reçu-0" . $count,
+      "payer"            => $request->payer,
+      "type_paiement"    => $request->type,
+      "date_paiement"    => Carbon::now(),
+      "statut"           => $request->type == "espèce" ? "payé" : $request->statusCheque,
+    ]);
+
+    if($request->type == "chèque")
+    {
       $request->validate([
-        "payer" => ["required","numeric","max:" . $max],
-        "type"  => ["required"]
+        "numero_cheque"    => ['required','unique:achat_cheques,numero'],
+        "banque_cheque"    => ["required",'exists:banques,id'],
+        "date_cheque"      => ['required','date'],
+        "date_enquisement" => ['required','date'],
       ]);
-
-
-      $numero = Str::random(6);
-      /**
-       * ? save achat paiement
-       */
-
-
-      $achat_paiement = AchatPaiement::create([
-        "numero_operation" => Str::upper($numero),
-        "ligne_achat_id"   => $ligne->id,
-        "payer"            => $request->payer,
-        "type_paiement"    => $request->type,
-        "date_paiement"    => Carbon::now(),
-        "status"           => $request->type == "espèce" ? "payé" : $request->statusCheque,
+      $banque_nom = DB::table("banques")->where("id",$request->banque_cheque)->first()->nom;
+      AchatCheque::create([
+        "achat_paiement_id"=>$achat_paiement->id,
+        "numero"           => $request->numero_cheque,
+        "banque"           => $banque_nom,
+        "date_cheque"      => $request->date_cheque,
+        "date_enquisement" => $request->date_enquisement,
       ]);
+    }
 
-      $sum_payer = AchatPaiement::where("ligne_achat_id",$ligne->id)->sum("payer");
-      $ligne->update([
-          "payer"         => $sum_payer,
-          "reste"         => $ligne->ttc- $sum_payer,
-      ]);
-      $this->updateFournisseur($ligne->fournisseur_id);
-
-      return redirect()->route("achatPaiement.minInfo",["achatPaiement" => $achat_paiement]);
-
-
+    $sum_payer = AchatPaiement::where("ligne_achat_id",$ligne->id)->sum("payer");
+    $ligne->update([
+        "payer"         => $sum_payer,
+        "reste"         => $ligne->ttc- $sum_payer,
+    ]);
+    $this->updateFournisseur($ligne->fournisseur_id);
+    return redirect()->route("achatPaiement.minInfo",["achatPaiement" => $achat_paiement]);
   }
 
 
@@ -121,9 +139,11 @@ class AchatPaiementController extends Controller
   public function edit(AchatPaiement $achatPaiement)
   {
       $ligneAchat = LigneAchat::where("id",$achatPaiement->ligne_achat_id)->first();
+      $banques = DB::table("banques")->select("id","nom")->whereNull("deleted_at")->get();
       $all = [
           "achatPaiement" => $achatPaiement,
           "ligneAchat"    => $ligneAchat,
+          "banques"       => $banques,
       ];
       return view("achatPaiements.edit",$all);
   }
@@ -147,6 +167,28 @@ class AchatPaiementController extends Controller
       "payer"=>$request->payer,
       "status"=>$request->status ? $request->status : "payé",
     ]);
+    if($achatPaiement->type_paiement == "chèque")
+    {
+      $banque_nom = DB::table("banques")->where("id",$request->banque_cheque)->first()->nom;
+      $request->validate([
+        'numero_cheque' => [
+        "required",
+        Rule::unique('achat_cheques', 'numero')->ignore($achatPaiement->cheque->numero),
+      ],
+        "banque_cheque"    => ["required",'exists:banques,id'],
+        "date_cheque"      => ['required','date'],
+        "date_enquisement" => ['required','date'],
+      ]);
+      $banque_nom = DB::table("banques")->where("id",$request->banque_cheque)->first()->nom;
+      $achatPaiement->cheque->update([
+        "numero"           => $request->numero_cheque,
+        "banque"           => $banque_nom,
+        "date_cheque"      => $request->date_cheque,
+        "date_enquisement" => $request->date_enquisement,
+      ]);
+
+    }
+
     $sum_payer = AchatPaiement::where("ligne_achat_id",$ligneAchat->id)
                 ->where('status',"payé")
                 ->sum("payer");
@@ -200,17 +242,18 @@ class AchatPaiementController extends Controller
   public function add($id)
   {
     $ligneAchat = LigneAchat::find($id);
-    if($ligneAchat->statut == "validé" && $ligneAchat->reste != 0)
+    if($ligneAchat->statut == "validé" && $ligneAchat->reste > 0)
     {
+      $banques = DB::table("banques")->select("id","nom")->whereNull("deleted_at")->get();
       $all   = [
         "ligneAchat" => $ligneAchat,
+        "banques"    => $banques
       ];
       return view("achatPaiements.new",$all);
     }
     else
     {
       return back();
-
     }
   }
 

@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource("/ligneAchat",LigneAchatController::class);
     Route::controller(LigneAchatController::class)->group(function () {
       Route::put('/achat-valider/{ligneAchat}','valider')->name("ligneAchat.valider");
+      Route::put('/achat-anuller/{ligneAchat}','annuler')->name("ligneAchat.annuler");
       Route::get('/bonCommande/{ligneAchat}','bon')->name("ligneAchat.bon");
       Route::get('/facture/{ligneAchat}','document')->name("ligneAchat.facture");
       Route::get('/facture/{ligneAchat}/demandePrice','demandePrice')->name("ligneAchat.demandePrice");

@@ -23,13 +23,78 @@
             @enderror
           </div>
         </div>
-
         <div class="col mb-2">
           <div class="form-group">
-            <label for="" class="form-label">Montant reste nouveau</label>
-            <input type="number" id="" step="any" class="form-control reste" value="" disabled>
+            <label for="" class="form-group">statut</label>
+            <select name="statut" id="" class="form-select @error('statut') is-invalid @enderror">
+              <option value="payé" {{ $ventePaiement->statut == "payé" ? "selected" : ""  }}>payé</option>
+              <option value="en cours" {{ $ventePaiement->statut == "en cours" ? "selected" : ""  }}>en cours</option>
+              <option value="impayé" {{ $ventePaiement->statut == "impayé" ? "selected" : ""  }}>impayé</option>
+            </select>
+            @error('statut')
+              <strong class="invalid-feedback">
+                {{ $message }}
+              </strong>
+            @enderror
           </div>
         </div>
+        @if ($ventePaiement->type_paiement == "chèque")
+
+          <div class="col mb-2">
+            <div class="form-group">
+              <label for="" class="form-group">Numéro</label>
+              <input type="text" name="numero_cheque" id="" class="form-control @error('numero_cheque') is-invalid @enderror" value="{{  $ventePaiement->cheque->numero }}">
+              @error('numero_cheque')
+                <strong class="invalid-feedback">
+                  {{ $message }}
+                </strong>
+              @enderror
+            </div>
+          </div>
+
+          <div class="col mb-2">
+            <div class="form-group">
+              <label for="" class="form-group">Banque</label>
+              <select name="banque_cheque" id="" class="form-select @error('banque_cheque') is-invalid @enderror">
+                <option value=""></option>
+                @foreach ($banques as $banque)
+                  <option value="{{ $banque->id }}" {{ $ventePaiement->cheque->banque == $banque->nom ? "selected":"" }}> {{ $banque->nom }} </option>
+                @endforeach
+              </select>
+              @error('banque_cheque')
+                <strong class="invalid-feedback">
+                  {{ $message }}
+                </strong>
+              @enderror
+            </div>
+          </div>
+
+          <div class="col mb-2">
+            <div class="form-group">
+              <label for="" class="form-group">Date</label>
+              <input type="date" name="date_cheque" id="" class="form-control @error('date_cheque') is-invalid @enderror" value="{{ $ventePaiement->cheque && $ventePaiement->cheque->date_cheque != '' ? $ventePaiement->cheque->date_cheque : '' }}">
+              @error('date_cheque')
+                <strong class="invalid-feedback">
+                  {{ $message }}
+                </strong>
+              @enderror
+            </div>
+          </div>
+
+          <div class="col mb-2">
+            <div class="form-group">
+              <label for="" class="form-group">Date enquisement</label>
+              <input type="date" name="date_enquisement" id="" class="form-control @error('date_enquisement') is-invalid @enderror" value="{{ $ventePaiement->cheque && $ventePaiement->cheque->date_enquisement != '' ? $ventePaiement->cheque->date_enquisement : '' }}">
+              @error('date_cheque')
+                <strong class="invalid-feedback">
+                  {{ $message }}
+                </strong>
+              @enderror
+            </div>
+          </div>
+
+
+          @endif
 
       </div>
       <div class="d-flex justify-content-between">

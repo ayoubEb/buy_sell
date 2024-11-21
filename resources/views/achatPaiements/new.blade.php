@@ -3,13 +3,7 @@
     nouveau paiementd'achat : {{ $ligneAchat->Num_achat }}
 @endsection
 @section('content')
-<div class="row">
-  <div class="col-12">
-    <div class="page-title-box d-flex align-items-center justify-content-between">
-      <h4 class="page-title mb-0 font-size-18">nouveau paiement d'achat : {{ $ligneAchat->num_achat }}</h4>
-    </div>
-  </div>
-</div>
+
   @include('layouts.session')
   @include('ligneAchats.minInfo',[ "id"=>$ligneAchat->id ])
   <h6 class="title mb-1">
@@ -32,6 +26,7 @@
               <select name="type" id="type" class="form-select @error('type') is-invalid @enderror" required>
                 <option value="">Choisir le type du paiement</option>
                 <option value="espèce" {{ old('type') == 'espèce' || old('type') == null ? 'selected' : '' }} >Espèce</option>
+                <option value="chèque" {{ old('type') == 'chèque' ? 'selected' : '' }} >Chèque</option>
               </select>
               @error('type')
                 <strong class="invalid-feedback">
@@ -65,6 +60,52 @@
         </div>
 
 
+        <div id="form-cheque">
+          <div class="row row-cols-2">
+            <div class="col">
+              <div class="form-group mb-2">
+                <label for="" class="form-label">numéro</label>
+                <input type="text" name="numero_cheque" id="" class="form-control @error('numero_cheque') is-invalid @enderror" value="{{ old('numero_cheque') }}">
+                @error('numero_cheque')
+                  <strong class="invalid-feedback"> {{ $message }} </strong>
+                @enderror
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group mb-2">
+                <label for="" class="form-label">banque</label>
+                <select name="banque_cheque" id="" class="form-select @error('banque_cheque') is-invalid @enderror">
+                  <option value="">-- Séléctionner la banque --</option>
+                  @foreach ($banques as $banque)
+                    <option value="{{ $banque->id }}" {{ $banque->id == old('banque_cheque') ? 'selected' : '' }} > {{ $banque->nom }} </option>
+                  @endforeach
+                </select>
+                @error('banque_cheque')
+                  <strong class="invalid-feedback"> {{ $message }} </strong>
+                @enderror
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group mb-2">
+                <label for="" class="form-label">date chèque</label>
+                <input type="date" name="date_cheque" id="" class="form-control @error('date_cheque') is-invalid @enderror" value="{{ old('date_cheque') == null ? date('Y-m-d') : old('date_cheque') }}">
+                @error('date_cheque')
+                  <strong class="invalid-feedback"> {{ $message }} </strong>
+                @enderror
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group mb-2">
+                <label for="" class="form-label">numéro</label>
+                <input type="date" name="date_enquisement" id="" class="form-control @error('date_enquisement') is-invalid @enderror" value="{{ old('date_enquisement') == null ? date('Y-m-d') : old('date_enquisement') }}">
+                @error('date_enquisement')
+                  <strong class="invalid-feedback"> {{ $message }} </strong>
+                @enderror
+              </div>
+            </div>
+          </div>
+        </div>
+
 
 
         <div class="d-flex justify-content-center mt-2">
@@ -91,29 +132,29 @@
           var type = $("#type").val();
           if(type == 'chèque')
           {
-            $("#cheque").show(450);
+            $("#form-cheque").show(450);
             $("#payer").prop("disabled",false);
           }
           else
           {
-            $("#cheque").hide(450);
+            $("#form-cheque").hide(450);
             $("#payer").prop("disabled",false);
           }
 
           var payer = $("#payer").val();
-              var reste = $("#reste").val();
-              var resteNew = parseFloat(reste - payer).toFixed(2);
-              $("#resteNew").val(resteNew);
+          var reste = $("#reste").val();
+          var resteNew = parseFloat(reste - payer).toFixed(2);
+          $("#resteNew").val(resteNew);
 
 
           $("#type").on("change", function() {
               let type = $(this).val();
 
               if (type == "chèque") {
-                  $("#cheque").show(450);
+                  $("#form-cheque").show(450);
 
               } else {
-                  $("#cheque").hide(450);
+                  $("#form-cheque").hide(450);
               }
 
 

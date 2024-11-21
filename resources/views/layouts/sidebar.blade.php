@@ -1,27 +1,4 @@
-{{-- <div class="vertical-menu">
 
-  <div class="h-100">
-
-      <div class="user-wid text-center py-4">
-          <div class="user-img">
-          </div>
-          <div class="mt-3">
-              <a href="#" class="text-reset fw-medium font-size-16"> {{ Auth::user()->name ?? '' }} </a>
-              <p class="text-muted mt-1 mb-0 font-size-13"> {{ Auth::user()->fonction ?? '' }} </p>
-          </div>
-      </div>
-       <!--- Sidemenu -->
-       <div id="sidebar-menu">
-             <!-- Left Menu Start -->
-             <ul class="metismenu list-unstyled" id="side-menu">
-
-
-            </ul>
-            <!-- Sidebar -->
-
-
-          </div>
-        </div> --}}
 
         <!-- ========== Left Sidebar Start ========== -->
         <div class="vertical-menu">
@@ -114,14 +91,22 @@
                         </li>
                         @endcanany
 
-                        @can('achatPaiement-list')
-                            <li>
-                              <a href="{{ route('achatPaiement.index') }}" class=" waves-effect">
-                                  <i class="dripicons-device-desktop"></i>
-                                  <span>paiements</span>
-                              </a>
-                            </li>
-                        @endcan
+                        @canany( ['achatPaiement-list', 'ventePaiement-list'])
+                        <li>
+                          <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="dripicons-device-desktop"></i>
+                                <span>paiements</span>
+                          </a>
+                          <ul class="sub-menu" aria-expanded="true">
+                              @can('achatPaiement-list')
+                                <li><a href="{{ route('achatPaiement.index') }}">achats</a></li>
+                              @endcan
+                              @can('ventePaiement-list')
+                                <li><a href="{{ route('ventePaiement.index') }}">ventes</a></li>
+                              @endcan
+                          </ul>
+                        </li>
+                        @endcanany
 
                         @can('categorieDepense-list')
                           <li>

@@ -71,6 +71,7 @@ class LigneAchatController extends Controller
     $request->validate([
       "fournisseur" => ['required'],
       "statut" => ['required'],
+      "datePaiement" => ['required'],
       "tva"         => ['required','numeric','exists:taux_tvas,valeur'],
     ]);
     if(isset($request->pro)){
@@ -84,6 +85,7 @@ class LigneAchatController extends Controller
         "statut"         => $request->statut,
         "date_achat"     => $request->date ?? Carbon::today(),
         "taux_tva"       => $request->tva,
+        "datePaiement"       => $request->datePaiement,
         "entreprise_id"  => $request->entreprise_id,
         "payer"          => 0,
         "mois"           => $mois,
@@ -213,7 +215,6 @@ class LigneAchatController extends Controller
     }
   }
 
-
   /**
    * Update the specified resource in storage.
    *
@@ -274,7 +275,32 @@ class LigneAchatController extends Controller
     return redirect()->route('ligneAchat.index');
   }
 
-
+  public function annuler(LigneAchat $ligneAchat) {
+    $ligneAchat->update([
+      "statut"=>"annuler",
+    ]);
+    $achats = $ligneAchat->achats()->get();
+    foreach($achats as $achat)
+    {
+      $produit = Produit::find($achat->produit_id);
+      $stock = Stock::where("produit_id" ,$achat->produit_id)->first();
+      StockSuivi::create([
+        "stock_id"       => $stock->id,
+        "quantite"       => $achat->quantite,
+        "date_mouvement" => Carbon::today(),
+        "fonction"       => "achat_validé",
+      ]);
+      $sum_qte = $produit->quantite + $achat->quantite;
+      $produit->quantite = $sum_qte;
+      $produit->save();
+      $stock->update([
+        "qte_achatRes" => $stock->qte_achatRes - $achat->quantite,
+      ]);
+    }
+    $this->updateFournisseur($ligneAchat->id);
+    Session()->flash("update","La modification d'achat effectuée");
+    return redirect()->route('ligneAchat.index');
+  }
   public function updateFournisseur($id){
     $ligneAchat = LigneAchat::find($id);
     $mt_demande = LigneAchat::where("fournisseur_id",$ligneAchat->fournisseur_id)->where("statut","en cours")->sum("ttc");
@@ -289,8 +315,6 @@ class LigneAchatController extends Controller
     ]);
 
   }
-
-
 
   public function demandePrice(LigneAchat $ligneAchat){
     $produits = $ligneAchat->achats()->get();

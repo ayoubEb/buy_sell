@@ -78,17 +78,60 @@
                                 <form action="{{ route('ligneAchat.valider',$ligne) }}" method="post">
                                   @csrf
                                   @method("PUT")
-                                  <span class="mdi mdi-check-bold text-success mdi-24px"></span>
+                                  <div class="d-flex justify-content-center">
+                                    <span class="mdi mdi-checkbox-marked-circle-outline text-success mdi-48px"></span>
+                                  </div>
                                 <h5 class="text-primary mb-2 text-center">Valider la facture séléctionner ?</h5>
                                 <h6 class="text-danger mb-2 text-center">{{ $ligne->num_achat ?? '' }}</h6>
                                 <h6 class="mb-3">Attention une fois validée , l'achat ne peux pas plus modifiables !</h6>
-                                <div class="d-flex justify-content-center">
-                                  <button type="submit" class="btn btn-vert waves-effect waves-light px-5 me-2">
-                                    Validé
-                                  </button>
-                                  <button type="button" class="btn btn-orange waves-effect waves-light px-5" data-bs-dismiss="modal" aria-label="btn-close">
-                                    Annuler
-                                  </button>
+                                <div class="row justify-content-center">
+                                  <div class="col-lg-5">
+                                    <button type="submit" class="btn btn-vert waves-effect waves-light w-100">
+                                      Validé
+                                    </button>
+                                  </div>
+                                  <div class="col-lg-5">
+                                    <button type="button" class="btn btn-orange waves-effect waves-light w-100" data-bs-dismiss="modal" aria-label="btn-close">
+                                      Annuler
+                                    </button>
+                                  </div>
+                                </div>
+
+                                </form>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <button type="button" class="btn btn-danger py-1 px-2 shadow-none" data-bs-toggle="modal" data-bs-target="#annuler{{ $ligne->id }}">
+                            <span class="mdi mdi-close-thick "></span>
+                        </button>
+                        <div class="modal fade" id="annuler{{ $ligne->id }}" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+                            <div class="modal-content">
+
+                              <div class="modal-body">
+                                <form action="{{ route('ligneAchat.annuler',$ligne) }}" method="post">
+                                  @csrf
+                                  @method("PUT")
+                                  <div class="d-flex justify-content-center">
+                                    <span class="mdi mdi-close-thick text-danger mdi-48px"></span>
+                                  </div>
+                                <h5 class="text-primary mb-2 text-center">annuler l'achat séléctionner ?</h5>
+                                <h6 class="text-danger mb-3 text-center">{{ $ligne->num_achat ?? '' }}</h6>
+                                {{-- <h6 class="mb-3">Attention une fois annuler , l'achat ne peux pas plus modifiables !</h6> --}}
+                                <div class="row justify-content-center">
+                                  <div class="col-lg-5">
+                                    <button type="submit" class="btn btn-brown waves-effect waves-light w-100">
+                                      je confirmé
+                                    </button>
+                                  </div>
+                                  <div class="col-lg-5">
+                                    <button type="button" class="btn btn-orange waves-effect waves-light w-100" data-bs-dismiss="modal" aria-label="btn-close">
+                                      Annuler
+                                    </button>
+                                  </div>
                                 </div>
 
                                 </form>
@@ -115,11 +158,13 @@
                           <span class="mdi mdi-file-outline"></span>
                         </a>
                       @endcan
-                      @can('achatPaiement-nouveau')
-                        <a href="{{ route('achatPaiement.new',$ligne) }}" class="btn btn-success waves-effect waves-light py-1 px-2">
-                          <span class="mdi mdi-plus-thick align-middle"></span>
-                        </a>
-                      @endcan
+                      @if ($ligne->reste > 0)
+                        @can('achatPaiement-nouveau')
+                          <a href="{{ route('achatPaiement.add',$ligne->id) }}" class="btn btn-success waves-effect waves-light py-1 px-2">
+                            <span class="mdi mdi-plus-thick align-middle"></span>
+                          </a>
+                        @endcan
+                      @endif
                     @endif
                   @else
                     <button type="button" class="btn btn-danger py-1 px-2 waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#warn{{ $k }}">
@@ -135,9 +180,7 @@
                             <h5 class="text-center">
                               Le fournisseur <span class="text-danger"> {{ $ligne->fournisseur->raison_sociale }} </span> a été supprimer
                             </h5>
-
                             <div class="row justify-content-center mt-4">
-
                               <div class="col-lg-5">
                                 <button type="button" class="btn btn-orange waves-effect waves-light py-3 w-100" data-bs-dismiss="modal" aria-label="btn-close">
                                   fermer
