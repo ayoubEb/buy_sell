@@ -12,13 +12,13 @@
   <div class="col-lg-7">
     <div class="card">
       <div class="card-body p-2">
-        <form action="{{ route('depense.store') }}" method="post">
+        <form action="{{ route('caisse.store') }}" method="post">
           @csrf
           <div class="form-group mb-2">
             <label for="" class="form-label">catégorie</label>
             <select name="categorie" id="" class="form-select @error('categorie') is-invalid @enderror">
               <option value="">-- choisir le catégorie --</option>
-              @foreach ($categorieDepenses as $categorie)
+              @foreach ($categorieCaisses as $categorie)
                 <option value="{{ $categorie->id }}" {{ $categorie->id == old("categorie") ? "selected" : "" }} > {{ $categorie->nom }} </option>
               @endforeach
             </select>
@@ -39,8 +39,8 @@
           </div>
           <div class="form-group mb-2">
             <label for="" class="form-label">date</label>
-            <input type="date" name="dateDepense" class="form-control @error('dateDepense') is-invalid @enderror" value="{{ old('dateDepense') == null ? date('Y-m-d') : old('dateDepense') }}">
-            @error('dateDepense')
+            <input type="date" name="dateCaisse" class="form-control @error('dateCaisse') is-invalid @enderror" value="{{ old('dateCaisse') == null ? date('Y-m-d') : old('dateCaisse') }}">
+            @error('dateCaisse')
               <strong class="invalid-feedback">
                 {{ $message }}
               </strong>
@@ -49,7 +49,7 @@
           <div class="form-group mb-2">
             <label for="" class="form-label">statut</label>
             <select name="statut" id="" class="form-select @error('statut') is-invalid @enderror">
-              <option value="">-- choisir le statut --</option>
+              <option value=""> -- choisir le statut -- </option>
               <option value="en cours" {{ old("statut") == "en cours" ? "selected" : "" }}>En cours</option>
               <option value="annuler" {{ old("statut") == "annuler" ? "selected" : "" }}>Annuler</option>
               <option value="faire" {{ old("statut") == "faire" ? "selected" : "" }}>Faire</option>
@@ -61,11 +61,24 @@
             @enderror
           </div>
           <div class="form-group mb-2">
-            <label for="" class="form-label">description</label>
-            <textarea name="description" id="" cols="30" rows="10" class="form-control">{{ old('description') }}</textarea>
+            <label for="" class="form-label">opération</label>
+            <select name="operation" id="" class="form-select @error('operation') is-invalid @enderror">
+              <option value="">-- choisir le operation --</option>
+              <option value="Révenu" {{ old("operation") == "Révenu" ? "selected" : "" }}>Révenu</option>
+              <option value="dépense" {{ old("operation") == "dépense" ? "selected" : "" }}>dépense</option>
+            </select>
+            @error('operation')
+            <strong class="invalid-feedback">
+              {{ $message }}
+            </strong>
+            @enderror
+          </div>
+          <div class="form-group mb-2">
+            <label for="" class="form-label">observation</label>
+            <textarea name="observation" id="" cols="30" rows="10" class="form-control">{{ old('observation') }}</textarea>
           </div>
           <div class="d-flex justify-content-between">
-            <a href="{{ route('depense.index') }}" class="btn btn-orange waves-effect waves-light">
+            <a href="{{ route('caisse.index') }}" class="btn btn-orange waves-effect waves-light">
               retour
             </a>
             <button type="submit" class="btn btn-vert waves-effect waves-light">

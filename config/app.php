@@ -213,6 +213,7 @@ return [
 
 	// Façade Laravel-dompdf
 	// "PDF" => \Barryvdh\DomPDF\Facade::class,
+  // 'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
 
 ])->toArray(),
 

@@ -26,6 +26,23 @@
   background: $color-darkLight !important;
   color: white !important;
 }
+.btn-brown-outline{
+  @extend .btn-customize;
+  background-color: white;
+  border: 3px solid $color-brown;
+  border-radius: .375rem;
+  color: $color-brown;
+  span{
+    color: $color-brown;
+  }
+  &:hover{
+    background-color:$color-brown;
+    border: 3px solid $color-brown;
+    span{
+      color: white;
+    }
+  }
+}
 label{
   text-transform: uppercase;
   // color: black;
@@ -37,10 +54,17 @@ label{
   box-shadow: none !important;
 
 }
+.title-header{
+  color: $color-darkLight;
+  text-transform: uppercase;
+  font-size: 17px;
+  letter-spacing: .5px;
+
+}
 .title{
   color: $color-brown;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: .5px;
 }
 

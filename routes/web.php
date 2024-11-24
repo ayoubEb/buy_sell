@@ -2,16 +2,17 @@
 
 use App\Http\Controllers\AchatController;
 use App\Http\Controllers\AchatPaiementController;
+use App\Http\Controllers\CaisseController;
+use App\Http\Controllers\CategorieCaisseController;
 use App\Http\Controllers\CategorieController;
-use App\Http\Controllers\CategorieDepenseController;
 use App\Http\Controllers\ClientController;
-use App\Http\Controllers\DepenseController;
 use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\FournisseurController;
 use App\Http\Controllers\HistoriqueController;
 use App\Http\Controllers\LigneAchatController;
 use App\Http\Controllers\LigneRapportController;
 use App\Http\Controllers\LigneVenteController;
+use App\Http\Controllers\MarqueController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\RapportAchatController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\StockSuiviController;
 use App\Http\Controllers\TauxTvaController;
+use App\Http\Controllers\UniteMesureController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VenteController;
 use App\Http\Controllers\VentePaiementController;
@@ -50,11 +52,13 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('client', ClientController::class);
     Route::resource('entreprise', EntrepriseController::class);
     Route::resource("/tauxTva",TauxTvaController::class);
-    Route::resource("/categorieDepense",CategorieDepenseController::class);
-    Route::resource("/depense",DepenseController::class);
+    Route::resource("/categorieCaisse",CategorieCaisseController::class);
+    Route::resource("/caisse",CaisseController::class);
     Route::resource("/achat",AchatController::class);
     Route::resource("/achatPaiement",AchatPaiementController::class);
     Route::resource("/ventePaiement",VentePaiementController::class);
+    Route::resource('marque', MarqueController::class);
+
     Route::get('/ligneAchat/{id}/addProduits',[AchatController::class,'add'])->name("achat.new");
     Route::controller(AchatPaiementController::class)->group(function(){
       Route::get('/achatPaiement/{achatPaiement}/minInfo','minInfo')->name("achatPaiement.minInfo");
@@ -72,9 +76,12 @@ Route::group(['middleware' => ['auth']], function() {
       Route::get('/facture/{ligneAchat}','document')->name("ligneAchat.facture");
       Route::get('/facture/{ligneAchat}/demandePrice','demandePrice')->name("ligneAchat.demandePrice");
     });
-    Route::resource("/ligneVente",LigneVenteController::class);
+    Route::resource("ligneVente",LigneVenteController::class);
     Route::controller(LigneVenteController::class)->group(function () {
-      Route::put('/vente-valider/{ligneVente}','valider')->name("ligneVente.valider");
+      Route::put('vente-valider/{ligneVente}','valider')->name("ligneVente.valider");
+      Route::get('ligneVente/{ligneVente}','devis')->name("ligneVente.devis");
+      Route::get('ligneVente/{ligneVente}/facture','facture')->name("ligneVente.facture");
+      Route::get('ligneVente/{ligneVente}/facture-preforma','facture_preforma')->name("ligneVente.facturePreforma");
     });
     Route::resource("/vente",VenteController::class)->except("create");
     Route::controller(VenteController::class)->group(function () {

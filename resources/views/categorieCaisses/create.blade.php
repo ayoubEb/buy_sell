@@ -12,7 +12,7 @@
   <div class="col-lg-7">
     <div class="card">
       <div class="card-body p-2">
-        <form action="{{ route('categorieDepense.store') }}" method="post">
+        <form action="{{ route('categorieCaisse.store') }}" method="post">
           @csrf
           <div class="form-group mb-2">
             <label for="" class="form-label">nom</label>
@@ -41,7 +41,7 @@
             <textarea name="description" id="" cols="30" rows="10" class="form-control">{{ old('description') }}</textarea>
           </div>
           <div class="d-flex justify-content-between">
-            <a href="{{ route('categorieDepense.index') }}" class="btn btn-orange waves-effect waves-light">
+            <a href="{{ route('categorieCaisse.index') }}" class="btn btn-orange waves-effect waves-light">
               retour
             </a>
             <button type="submit" class="btn btn-vert waves-effect waves-light">

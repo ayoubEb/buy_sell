@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Categorie;
+use App\Models\Marque;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,9 +19,10 @@ return new class extends Migration
             $table->id();
             $table->string('image')->nullable();
             $table->foreignIdFor(Categorie::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('reference')->unique()->nullable();
+            $table->foreignIdFor(Marque::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('reference')->nullable()->unique();
             $table->string('designation')->nullable();
-            $table->boolean('statut')->nullable();
+            $table->boolean('statut')->default(0);
             $table->text('description')->nullable();
             $table->double('prix_achat')->default(0);
             $table->double('prix_vente')->default(0);

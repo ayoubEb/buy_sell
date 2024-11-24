@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
@@ -42,5 +43,13 @@ class Produit extends Model
     {
         return $this->hasOne(Stock::class, 'produit_id', 'id');
     }
-
+    /**
+     * Get the marque that owns the Produit
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function marque(): BelongsTo
+    {
+        return $this->belongsTo(Marque::class, 'marque_id', 'id');
+    }
 }

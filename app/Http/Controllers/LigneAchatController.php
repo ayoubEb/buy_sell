@@ -317,18 +317,31 @@ class LigneAchatController extends Controller
   }
 
   public function demandePrice(LigneAchat $ligneAchat){
-    $produits = $ligneAchat->achats()->get();
+    $produits    = $ligneAchat->achats()->get();
     $fournisseur = DB::table("fournisseurs")->where("id",$ligneAchat->fournisseur_id)->first();
-    $cssPath = public_path('build/assets/document-fe395027.css');
-    $css = file_get_contents($cssPath);
+    $cssPath     = public_path('build/assets/document-fe395027.css');
+    $css         = file_get_contents($cssPath);
     $all = [
-      "produits"=>$produits,
-      "fournisseur"=>$fournisseur,
-      "ligneAchat"=>$ligneAchat,
-      "css"=>$css
+      "produits"    => $produits,
+      "fournisseur" => $fournisseur,
+      "ligneAchat"  => $ligneAchat,
+      "css"         => $css
     ];
-      $pdf = Pdf::loadview('ligneAchats.demandePrice',$all);
-      return $pdf->stream("demande prix : " . $ligneAchat->num_achat);
+    $pdf = Pdf::loadview('ligneAchats.demandePrice',$all);
+    return $pdf->stream("demande prix : " . $ligneAchat->num_achat);
   }
 
+
+  public function bon(LigneAchat $ligneAchat){
+    $produits      = $ligneAchat->achats()->get();
+    $fournisseur = DB::table("fournisseurs")->where("id",$ligneAchat->fournisseur_id)->first();
+
+    $all = [
+      "produits"     => $produits,
+      "ligneAchat" => $ligneAchat,
+      "fournisseur" => $fournisseur,
+    ];
+    $pdf = Pdf::loadview('ligneAchats.bonCmd',$all);
+    return $pdf->stream("bon commande|" . $ligneAchat->num_achat);
+  }
 }

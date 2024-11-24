@@ -34,7 +34,7 @@
       width: 100%;
       margin-bottom: 8rem;
     }
-    .fournisseur{
+    .client{
       margin       : 0 !important;
       padding      : 5px !important;
       border       : 1px solid black;
@@ -113,12 +113,12 @@
   <hr>
 
   <div class="top-page">
-    <div class="fournisseur">
+    <div class="client">
       <ul>
-        <li>{{ $fournisseur->raison_sociale  }} </li>
-        <li>{{ $fournisseur->telephone  }} </li>
-        <li>{{ $fournisseur->adresse  }} - {{ $fournisseur->ville }} </li>
-        <li>{{ $fournisseur->email  }} </li>
+        <li>{{ $client->raison_sociale  }} </li>
+        <li>{{ $client->telephone  }} </li>
+        <li>{{ $client->adresse  }} - {{ $client->ville }} </li>
+        <li>{{ $client->email  }} </li>
       </ul>
     </div>
 
@@ -131,7 +131,7 @@
         </thead>
         <tbody>
           <tr>
-            <td>{{ $ligneAchat->date_achat }} </td>
+            <td>{{ $commande->dateCommande }} </td>
           </tr>
         </tbody>
       </table>
@@ -139,7 +139,7 @@
   </div>
 
   <h6>
-    demande de prix : {{ $ligneAchat->num_achat }}
+    facture préforma : {{ $commande->num }}
   </h6>
 
   <div class="produits">
@@ -155,16 +155,16 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($produits as $achat)
+            @foreach ($produits as $cmd)
                 <tr>
                     <td>
-                      {{ $achat->produit->reference ?? ''}}
+                      {{ $cmd->produit->reference ?? ''}}
                     </td>
-                    <td> {{ $achat->produit->designation ?? ''}} </td>
-                    <td> {{ $achat->quantite ?? ''}} </td>
-                    <td> {{ number_format($achat->prix , 2 , "," , " ")." DH"}} </td>
-                    <td> {{ number_format($achat->remise , 2 , "," , " ")." %"}} </td>
-                    <td> {{ number_format($achat->montant , 2 , "," , " ")." DH"}} </td>
+                    <td> {{ $cmd->produit->designation ?? ''}} </td>
+                    <td> {{ $cmd->quantite ?? ''}} </td>
+                    <td> {{ number_format($cmd->prix , 2 , "," , " ")." DH"}} </td>
+                    <td> {{ number_format($cmd->remise , 2 , "," , " ")." %"}} </td>
+                    <td> {{ number_format($cmd->montant , 2 , "," , " ")." DH"}} </td>
                 </tr>
 
             @endforeach
@@ -199,11 +199,11 @@
       <tbody>
         <tr>
           <td> {{ count($produits) }} </td>
-          {{-- <td> {{ number_format($ligneAchat->remise , 2 , "," ," ") . " %" }} </td> --}}
-          <td> {{ number_format($ligneAchat->ht , 2 , "," ," ") . " DH" }} </td>
-          <td> {{ number_format($ligneAchat->tva , 2 , "," ," ") . " %" }} </td>
-          <td> {{ number_format($ligneAchat->ttc , 2 , "," ," ") . " DH" }} </td>
-          <td> {{ number_format($ligneAchat->ttc , 2 , "," ," ") . " DH" }} </td>
+          {{-- <td> {{ number_format($commande->remise , 2 , "," ," ") . " %" }} </td> --}}
+          <td> {{ number_format($commande->ht , 2 , "," ," ") . " DH" }} </td>
+          <td> {{ number_format($commande->tva , 2 , "," ," ") . " %" }} </td>
+          <td> {{ number_format($commande->ttc , 2 , "," ," ") . " DH" }} </td>
+          <td> {{ number_format($commande->ttc , 2 , "," ," ") . " DH" }} </td>
         </tr>
       </tbody>
     </table>
@@ -213,13 +213,13 @@
         <table>
             <tbody>
                 <tr>
-                    <td> {{ $ligneAchat->entreprise->adresse ?? '' }} - {{ $ligneAchat->entreprise->ville ?? '' }} - Tél : {{ $ligneAchat->entreprise->telephone ?? '' }} </td>
+                    <td> {{ $commande->entreprise->adresse ?? '' }} - {{ $commande->entreprise->ville ?? '' }} - Tél : {{ $commande->entreprise->telephone ?? '' }} </td>
                 </tr>
                 <tr>
-                    <td>RC : {{ $ligneAchat->entreprise->rc ?? '' }} - N° : {{ $ligneAchat->entreprise->email ?? '' }} - Patente : {{ $ligneAchat->entreprise->patente ?? '' }} </td>
+                    <td>RC : {{ $commande->entreprise->rc ?? '' }} - N° : {{ $commande->entreprise->email ?? '' }} - Patente : {{ $commande->entreprise->patente ?? '' }} </td>
                 </tr>
                 <tr>
-                    <td>ICE : {{ $ligneAchat->entreprise->ice ?? '' }} - email : {{ $ligneAchat->entreprise->email ?? '' }} / {{ $ligneAchat->entreprise->site ?? '' }} </td>
+                    <td>ICE : {{ $commande->entreprise->ice ?? '' }} - email : {{ $commande->entreprise->email ?? '' }} / {{ $commande->entreprise->site ?? '' }} </td>
                 </tr>
             </tbody>
         </table>

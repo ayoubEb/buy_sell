@@ -4,20 +4,13 @@
     Modification catégorie
 @endsection
 @section('content')
-<div class="row">
-  <div class="col-12">
-      <div class="page-title-box d-flex align-items-center justify-content-between">
-          <h4 class="page-title mb-0 font-size-18">Dashboard</h4>
+  <h6 class="title-header mb-2">
+    <a href="{{ route('categorie.index') }}" class="btn btn-brown-outline px-4 py-1">
+      <span class="mdi mdi-arrow-left-thick mdi-24px"></span>
+    </a>
+    modifier le categorie : {{ $categorie->nom }}
+  </h6>
 
-          <div class="page-title-right">
-              <ol class="breadcrumb m-0">
-                  <li class="breadcrumb-item active">Welcome to Qovex Dashboard</li>
-              </ol>
-          </div>
-
-      </div>
-  </div>
-</div>
   <div class="card">
     <div class="card-body p-2">
       <div class="row justify-content-center">
@@ -56,15 +49,8 @@
               <textarea name="description" rows="10" class="form-control">{{ $categorie->description }}</textarea>
             </div>
 
-            <div class="row justify-content-between">
-              <div class="col-lg-2">
-                <a href="{{ route('categorie.index') }}" class="btn btn-retour waves-effect waves-light w-100">
-                  <span>
-                      retour
-                  </span>
-                </a>
+            <div class="row justify-content-center">
 
-              </div>
 
               <div class="col-lg-2">
                   <button type="submit" class="btn btn-vert waves-effect waves-light w-100">

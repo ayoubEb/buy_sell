@@ -97,9 +97,9 @@ Liste des commandes
                 <td class="align-middle">
                   @can('ligneVente-display')
 
-                    <a href="{{ route('ligneVente.show',$commande->id) }}" class="{{ $commande->status == "validé" ? 'd-none':'' }} btn btn-warning waves-effect waves-light py-1 px-2">
+                    {{-- <a href="{{ route('ligneVente.show',$commande->id) }}" class="{{ $commande->status == "validé" ? 'd-none':'' }} btn btn-warning waves-effect waves-light py-1 px-2">
                         <span class="mdi mdi-eye-outline"></span>
-                    </a>
+                    </a> --}}
 
                   @endcan
 
@@ -136,11 +136,69 @@ Liste des commandes
                           </div>
                         </div>
                       @endcan
+
                     @else
                         <a href="{{ route('ventePaiement.add',$commande->id) }}" class="btn btn-success waves-effect waves-light py-1 px-2">
                           <span class="mdi mdi-plus-thick"></span>
                         </a>
+
                     @endif
+
+                    <button type="button" class="btn btn-dark waves-effect waves-light py-1 px-2" data-bs-toggle="modal" data-bs-target="#files{{ $k }}">
+                      <span class="mdi mdi-file-outline"></span>
+                    </button>
+                    <div class="modal fade" id="files{{ $k }}" tabindex="-1" aria-labelledby="myLargeModalLabel" style="display: none;" aria-hidden="true">
+                      <div class="modal-dialog modal-lg modal-centered">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title mt-0" id="myLargeModalLabel">Large
+                                      modal</h5>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                <div class="row row-cols-2">
+                                  @if ($commande->statut == "en cours")
+                                    <div class="col">
+                                      <a href="{{ route('ligneVente.devis',$commande->id) }}" class="btn btn-darkLight waves-effect waves-light w-100">
+                                        devi
+                                        <span class="mdi mdi-share-outline"></span>
+                                      </a>
+                                    </div>
+                                    <div class="col">
+                                      <a href="{{ route('ligneVente.facturePreforma',$commande->id) }}" class="btn btn-darkLight waves-effect waves-light w-100">
+                                        facture préforma
+                                        <span class="mdi mdi-share-outline"></span>
+                                      </a>
+                                    </div>
+                                    @endif
+                                    @if($commande->statut == "validé")
+                                      <div class="col">
+                                        <a href="{{ route('ligneVente.devis',$commande->id) }}" class="btn btn-darkLight waves-effect waves-light w-100 mb-2">
+                                          devi
+                                          <span class="mdi mdi-share-outline"></span>
+                                        </a>
+                                      </div>
+                                      <div class="col">
+                                        <a href="{{ route('ligneVente.facturePreforma',$commande->id) }}" class="btn btn-darkLight waves-effect waves-light w-100 mb-2">
+                                          facture préforma
+                                          <span class="mdi mdi-share-outline"></span>
+                                        </a>
+                                      </div>
+                                      <div class="col">
+                                        <a href="{{ route('ligneVente.facture',$commande->id) }}" class="btn btn-darkLight waves-effect waves-light w-100">
+                                          facture
+                                          <span class="mdi mdi-share-outline"></span>
+                                        </a>
+                                      </div>
+                                  @endif
+                                </div>
+                              </div>
+                          </div>
+                          <!-- /.modal-content -->
+                      </div>
+                      <!-- /.modal-dialog -->
+                    </div>
 
                   @else
                     <button type="button" class="btn btn-danger p-0 px-1 waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#warn{{ $k }}">

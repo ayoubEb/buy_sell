@@ -1,14 +1,11 @@
 @extends('layouts.master')
 @section('content')
-<div class="row">
-  <div class="col-12">
-      <div class="page-title-box d-flex align-items-center justify-content-between">
-          <h4 class="page-title mb-0 font-size-18">modifier le produit : {{ $produit->reference }} </h4>
-      </div>
-  </div>
-</div>
-
-
+<h6 class="title-header mb-2">
+  <a href="{{ route('produit.index') }}" class="btn btn-brown-outline px-4 py-1">
+    <span class="mdi mdi-arrow-left-thick mdi-24px"></span>
+  </a>
+  modifier le produit : {{ $produit->reference }}
+</h6>
 <form action="{{route('produit.update',$produit)}}" method="post" enctype="multipart/form-data">
   @csrf
   @method("PUT")
@@ -62,6 +59,17 @@
             </div>
             <div class="col mb-2">
               <div class="form-group">
+                <label for="" class="form-label">Prix Vente <span class="text-danger"> * </span></label>
+                <input type="number" name="prix_vente" id="" class="form-control  @error('prix_vente') is-invalid @enderror" min="0" step="any" value="{{ $produit->prix_vente }}">
+                @error('prix_vente')
+                  <strong class="invalid-feedback">
+                    {{ $message }} ex : 0/0.00
+                  </strong>
+                @enderror
+              </div>
+            </div>
+            <div class="col mb-2">
+              <div class="form-group">
                 <label for="" class="form-label">Catégorie</label>
                 <select name="categorie" id="" class="form-select @error('categorie') is-invalid @enderror">
                     <option value="">Choisir la catégorie</option>
@@ -72,6 +80,31 @@
                   @error('categorie')
                     <strong class="invalid-feedback"> {{ $message }} </strong>
                   @enderror
+              </div>
+            </div>
+
+            <div class="col mb-2">
+              <div class="form-group">
+                <label for="" class="form-label">marque</label>
+                <select name="marque" id="" class="form-select @error('marque') is-invalid @enderror">
+                  <option value="">Choisir la marque</option>
+                  @foreach ($marques as $marque)
+                    <option value="{{ $marque->id }}" {{ $produit->marque_id == $marque->id ? "selected": "" }}>{{ $marque->nom }} </option>
+                  @endforeach
+                </select>
+                @error('marque')
+                  <strong class="invalid-feedback"> {{ $message }} </strong>
+                @enderror
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group mb-2">
+                <label for="" class="form-label">statut</label>
+                <select name="statut" id="" class="form-select">
+                  <option value="">-- choisir le statut--</option>
+                  <option value="1" {{ $produit->statut == 1 ? "selected" : "" }}>Activé</option>
+                  <option value="0" {{ $produit->statut == 0 ? "selected" : "" }}>Desactuvé</option>
+                </select>
               </div>
             </div>
           </div>

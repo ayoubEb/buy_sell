@@ -131,21 +131,6 @@ class CategorieController extends Controller
       return redirect()->route('categorie.index');
   }
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  \App\Models\Categorie  $categorie
-   * @return \Illuminate\Http\Response
-   */
-  public function show(Categorie $categorie)
-  {
-      $sous_categories = $categorie->sous()->get();
-      $all = [
-          'categorie'       => $categorie,
-          'sous_categories' => $sous_categories
-      ];
-      return view("categories.show",$all);
-  }
 
   /**
    * Show the form for editing the specified resource.
@@ -210,26 +195,26 @@ class CategorieController extends Controller
 
 
   function setEnvValue($key, $value)
-{
-    $path = base_path('.env');
+  {
+      $path = base_path('.env');
 
-    if (file_exists($path)) {
-        $content = file_get_contents($path);
+      if (file_exists($path)) {
+          $content = file_get_contents($path);
 
-        // Replace existing key-value pair or add a new one
-        if (strpos($content, "{$key}=") !== false) {
-            $content = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $content);
-        } else {
-            $content .= "\n{$key}={$value}";
-        }
+          // Replace existing key-value pair or add a new one
+          if (strpos($content, "{$key}=") !== false) {
+              $content = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $content);
+          } else {
+              $content .= "\n{$key}={$value}";
+          }
 
-        file_put_contents($path, $content);
+          file_put_contents($path, $content);
 
-        // Clear config cache to apply changes
+          // Clear config cache to apply changes
 
 
-    }
-}
+      }
+  }
 
 
 

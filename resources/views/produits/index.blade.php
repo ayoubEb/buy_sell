@@ -3,19 +3,18 @@
     Liste des produits
 @endsection
 @section('content')
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h6 class="title-header m-0">
+    liste des produits
+  </h6>
+  @can("produit-nouveau")
+    <a href="{{ route('produit.create') }}" class="btn btn-brown waves-effect waves-light px-4">
+      <span class="mdi mdi-plus-thick mdi-18px"></span>
+    </a>
+  @endcan
+</div>
 <div class="card">
   <div class="card-body p-1">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h6 class="title m-0">
-        liste des produits
-      </h6>
-      @can("produit-nouveau")
-        <a href="{{ route('produit.create') }}" class="btn btn-brown waves-effect waves-light px-3">
-       <span class="mdi mdi-plus-thick mdi-18px"></span>
-        </a>
-      @endcan
-    </div>
-
     @include('layouts.session')
     <div class="table-responsive">
       <table id="datatable" class="table table-bordered mb-0 table-customize">

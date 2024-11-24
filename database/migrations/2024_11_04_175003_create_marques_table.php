@@ -13,11 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('taux_tvas', function (Blueprint $table) {
+        Schema::create('marques', function (Blueprint $table) {
             $table->id();
-            $table->string("nom")->nullable();
-            $table->double("valeur")->nullable();
-            $table->string("description")->nullable();
+            $table->string('nom')->nullable();
             $table->boolean('statut')->nullable();
             $table->datetime("deleted_at")->nullable();
             $table->timestamps();
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('taux_tvas');
+        Schema::dropIfExists('marques');
     }
 };

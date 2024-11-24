@@ -1,20 +1,12 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="row">
-  <div class="col-12">
-      <div class="page-title-box d-flex align-items-center justify-content-between">
-          <h4 class="page-title mb-0 font-size-18">nouveau stock</h4>
-
-          <div class="page-title-right">
-              <ol class="breadcrumb m-0">
-                  <li class="breadcrumb-item active">nouveau stock</li>
-              </ol>
-          </div>
-
-      </div>
-  </div>
-</div>
+<h6 class="title-header mb-2">
+  <a href="{{ route('categorie.index') }}" class="btn btn-brown-outline px-4 py-1">
+    <span class="mdi mdi-arrow-left-thick mdi-24px"></span>
+  </a>
+  nouveau categorie : {{ $categorie->nom }}
+</h6>
   <div class="card">
     <div class="card-body p-2">
       <div class="row justify-content-center">

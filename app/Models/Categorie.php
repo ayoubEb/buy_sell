@@ -22,8 +22,5 @@ class Categorie extends Model
             ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}");
     }
 
-    public function produit()
-    {
-        // return $this->hasOne(Produit::class);
-    }
+
 }

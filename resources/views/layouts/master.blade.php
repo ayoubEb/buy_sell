@@ -10,8 +10,7 @@
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
-
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/logo.png') }}" />
     @include('layouts.vendor-css')
     @vite('resources/sass/style.scss')
 </head>

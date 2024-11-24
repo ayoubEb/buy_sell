@@ -137,14 +137,31 @@
                               <li>
                                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                                       <i class="dripicons-device-desktop"></i>
-                                      <span>paiements</span>
+                                      <span>caisses</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="true">
                                     @can('ventePaiement-list')
-                                      <li><a href="{{ route('ventePaiement.index') }}">ventes</a></li>
+                                      <li><a href="{{ route('categorieCaisse.index') }}">catégorie caisse</a></li>
                                     @endcan
                                     @can('achatPaiement-list')
-                                      <li><a href="{{ route('achatPaiement.index') }}">achats</a></li>
+                                      <li><a href="{{ route('caisse.index') }}">caisse</a></li>
+                                    @endcan
+                                </ul>
+                              </li>
+                            @endcanany
+
+                            @canany( ['ventePaiement-list', 'achatPaiement-list'])
+                              <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                      <i class="dripicons-device-desktop"></i>
+                                      <span>paramètres</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="true">
+                                    @can('ventePaiement-list')
+                                      <li><a href="{{ route('tauxTva.index') }}">tva</a></li>
+                                    @endcan
+                                    @can('achatPaiement-list')
+                                      <li><a href="{{ route('marque.index') }}">marques</a></li>
                                     @endcan
                                 </ul>
                               </li>

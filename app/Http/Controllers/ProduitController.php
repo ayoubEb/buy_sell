@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MarqueProduit;
 use App\Models\Produit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use Illuminate\Validation\Rule;
+
 class ProduitController extends Controller
 {
     function __construct()
@@ -41,9 +44,11 @@ class ProduitController extends Controller
      */
     public function create()
     {
-        $categories       = DB::table("categories")->select('id','nom')->whereNull("deleted_at")->get();
+        $categories = DB::table("categories")->select('id','nom')->whereNull("deleted_at")->get();
+        $marques    = DB::table("marques")->select("id","nom")->get();
         $all = [
-            "categories"       => $categories,
+            "categories" => $categories,
+            "marques"    => $marques,
         ];
         return view("produits.create",$all);
     }
@@ -58,10 +63,12 @@ class ProduitController extends Controller
     {
         $request->validate([
             "reference"    => ["required","unique:produits,reference"],
+            "marque"    => ["required","exists:marques,id"],
             "designation"  => ["required"],
             "categorie"    => ["required"],
             "prix_achat"   => ["required","min:0","numeric"],
             "prix_revient"   => ["required","min:0","numeric"],
+            "prix_vente"   => ["required","min:0","numeric"],
 
           ]);
 
@@ -73,17 +80,19 @@ class ProduitController extends Controller
             $request->file("img")->storeAs($destination_path,$filename);
           }
 
-          Produit::create([
+         $produit = Produit::create([
             "image"        => $resu ?? "",
             "reference"    => $request->reference,
-            "categorie_id"    => $request->categroie,
+            "categorie_id"    => $request->categorie,
+            "marque_id"    => $request->marque,
             "designation"  => Str::upper($request->designation),
             "description"  => $request->description,
             "prix_achat"   => $request->prix_achat,
             "prix_revient" => $request->prix_revient,
+            "prix_vente" => $request->prix_vente,
             "quantite"     => 0,
           ]);
-          Session()->flash("success","La modification du produit effectuée");
+          Session()->flash("success","Lca modification du produit effectuée");
           return redirect()->route('produit.index');
     }
 
@@ -108,9 +117,12 @@ class ProduitController extends Controller
     public function edit(Produit $produit)
     {
         $categories       = DB::table("categories")->whereNull("deleted_at")->get();
+        $marques    = DB::table("marques")->select("id","nom")->get();
+
         $all = [
             "produit"          => $produit,
             "categories"       => $categories,
+            "marques"       => $marques,
         ];
         return view("produits.edit",$all);
     }
@@ -125,11 +137,12 @@ class ProduitController extends Controller
     public function update(Request $request, Produit $produit)
     {
         $request->validate([
-            "reference"   => ["required","exists:produits,reference"],
+            "reference"   => ["required",Rule::unique('produits', 'reference')->ignore($produit->id),],
             "designation" => ["required"],
             "categorie" => ["required",'exists:categories,id'],
             "prix_achat"   => ["required","min:0","numeric"],
             "prix_revient"   => ["required","min:0","numeric"],
+            "prix_vente"   => ["required","min:0","numeric"],
           ]);
 
           if (File::exists(storage_path().'/app/public/images/produits/'.$produit->image)) {
@@ -147,12 +160,14 @@ class ProduitController extends Controller
 
             $produit->update([
               "image"        => $img_produit ?? $produit->image,
-              "reference"    => $request->reference == $produit->reference ? $produit->reference : Str::upper($request->reference),
+              "reference"    => $request->reference,
               "designation"  => Str::upper($request->designation),
               "description"  => $request->description,
               "categorie_id"  => $request->categorie,
-              "categorie_id"   => $request->categorie,
+              "marque_id"  => $request->marque,
               "prix_revient" => $request->prix_revient,
+              "prix_achat" => $request->prix_achat,
+              "prix_vente" => $request->prix_vente,
             ]);
 
         Session()->flash("update","La modification du produit effectuée");

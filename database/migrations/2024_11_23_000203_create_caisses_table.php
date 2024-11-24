@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\CategorieCaisse;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,12 +14,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('taux_tvas', function (Blueprint $table) {
+        Schema::create('caisses', function (Blueprint $table) {
             $table->id();
-            $table->string("nom")->nullable();
-            $table->double("valeur")->nullable();
-            $table->string("description")->nullable();
-            $table->boolean('statut')->nullable();
+            $table->foreignIdFor(CategorieCaisse::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->double("montant")->default(0);
+            $table->date("dateCaisse")->nullable();
+            $table->string("statut")->nullable();
+            $table->string("operation")->nullable();
+            $table->text("observation")->nullable();
             $table->datetime("deleted_at")->nullable();
             $table->timestamps();
         });
@@ -31,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('taux_tvas');
+        Schema::dropIfExists('caisses');
     }
 };

@@ -28,6 +28,7 @@
 </div>
 
 
+
 <div class="card">
   <div class="card-body p-2">
     @include('ligneAchats.resumeLigne',[ "id"=>$ligneAchat->id ])
@@ -48,21 +49,11 @@
 
     <div class="tab-content">
       <div class="tab-pane @if(!Session::has('sup')) active @endif p-0 pt-3" id="infoAchat" role="tabpanel">
+        <div class="row row-cols-2">
+          <div class="col">
             <div class="table-responsive">
               <table class="table table-bordered m-0 info">
                 <tbody>
-                  <tr>
-                    <td class="align-middle">
-                      fournisseur
-                    </td>
-                    <td class="align-middle">
-                      {{
-                        $ligneAchat->fournisseur &&
-                        $ligneAchat->fournisseur->raison_sociale != '' ?
-                        $ligneAchat->fournisseur->raison_sociale : ''
-                      }}
-                    </td>
-                  </tr>
                   <tr>
                     <td class="align-middle">
                       entreprise
@@ -77,45 +68,12 @@
                   </tr>
                   <tr>
                     <td class="align-middle">
-                      référence
+                      statut
                     </td>
                     <td class="align-middle">
                       {{
-                        $ligneAchat->num_achat != '' ?
-                        $ligneAchat->num_achat : ''
-                      }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="align-middle">
-                      status
-                    </td>
-                    <td class="align-middle">
-                      {{
-                        $ligneAchat->status != '' ?
-                        $ligneAchat->status : ''
-                      }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="align-middle">
-                      taux_tva
-                    </td>
-                    <td class="align-middle">
-                      {{
-                        $ligneAchat->taux_tva != '' ?
-                        $ligneAchat->taux_tva . '%' : ''
-                      }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="align-middle">
-                      mois
-                    </td>
-                    <td class="align-middle">
-                      {{
-                        $ligneAchat->mois != '' ?
-                        $ligneAchat->mois : ''
+                        $ligneAchat->statut != '' ?
+                        $ligneAchat->statut : ''
                       }}
                     </td>
                   </tr>
@@ -130,7 +88,14 @@
                       }}
                     </td>
                   </tr>
-
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col">
+            <div class="table-responsive">
+              <table class="table table-bordered m-0 info">
+                <tbody>
                   <tr>
                     <td class="align-middle">
                       mois
@@ -164,55 +129,17 @@
                       }}
                     </td>
                   </tr>
-                  <tr>
-                    <td class="align-middle">
-                      montant ht
-                    </td>
-                    <td class="align-middle">
-                      <span class="fw-bold">
-                        {{ number_format($ligneAchat->ht , 2 , "," , " ") }} dhs
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="align-middle">
-                      montant ttc
-                    </td>
-                    <td class="align-middle">
-                      <span class="fw-bold">
-                        {{ number_format($ligneAchat->ttc , 2 , "," , " ") }} dhs
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="align-middle">
-                      montant à payé
-                    </td>
-                    <td class="align-middle">
-                      <span class="fw-bold text-success">
-                        {{ number_format($ligneAchat->payer , 2 , "," , " ") }} dhs
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="align-middle">
-                      montant à reste
-                    </td>
-                    <td class="align-middle">
-                      <span class="fw-bold text-danger">
-                        {{ number_format($ligneAchat->reste , 2 , "," , " ") }} dhs
-                      </span>
-                    </td>
-                  </tr>
 
                 </tbody>
               </table>
             </div>
-            <div class="table-responsive">
-              <table class="table table-bordered m-0 info">
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered m-0 info">
 
-              </table>
-            </div>
+          </table>
+        </div>
       </div>
       <div class="tab-pane p-0 pt-3" id="produits" role="tabpanel">
         <div class="table-resposnive">
@@ -250,7 +177,7 @@
               nouveau paiement
             </a>
           @endcan
-       @endif
+        @endif
         <div class="table-resposnive">
           <table class="table table-bordered table-sm m-0">
             <thead class="table-success">
