@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    Liste des clients
+    clients
 @endsection
 @section('content')
 @include('sweetalert::alert')
