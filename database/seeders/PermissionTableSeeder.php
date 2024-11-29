@@ -16,6 +16,7 @@ class PermissionTableSeeder extends Seeder
     {
         $permissions = [
             'role-list','role-nouveau','role-modification','role-suppression','role-display',
+            'livraison-list','livraison-nouveau','livraison-modification','livraison-suppression','livraison-display',
             'categorieCaisse-list','categorieCaisse-nouveau','categorieCaisse-modification','categorieCaisse-suppression','categorieCaisse-display',
             'caisse-list','caisse-nouveau','caisse-modification','caisse-suppression','caisse-display',
             'produit-list','produit-nouveau','produit-modification','produit-suppression','produit-display',
@@ -32,7 +33,6 @@ class PermissionTableSeeder extends Seeder
             'categorie-list','categorie-nouveau','categorie-modification','categorie-suppression','categorie-display',
             'stock-list','stock-nouveau','stock-modification','stock-display',
             'stockSuivi-list','stockSuivi-nouveau',
-            'uniteMesure-list','uniteMesure-nouveau','uniteMesure-mofication','uniteMesure-suppression',
             'marque-list','marque-nouveau','marque-mofication','marque-suppression',
             'tauxTva-list','tauxTva-nouveau','tauxTva-modification','tauxTva-suppression',
          ];

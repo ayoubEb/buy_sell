@@ -3,7 +3,7 @@
     clients
 @endsection
 @section('content')
-@include('sweetalert::alert')
+
 <div class="card">
   <div class="card-body p-2">
     @can('client-nouveau')

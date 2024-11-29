@@ -4,7 +4,7 @@
 @endsection
 @section('content')
 
-@include('sweetalert::alert')
+
 <form action="{{ route('client.update',$client) }}" method="post">
   @csrf
   @method("PUT")

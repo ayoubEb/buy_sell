@@ -40,20 +40,20 @@
 
 
                         @canany( ['client-list', 'fournisseur-list'])
-                        <li>
-                          <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="dripicons-device-desktop"></i>
-                                <span>crm</span>
-                          </a>
-                          <ul class="sub-menu" aria-expanded="true">
-                              @can('fournisseur-list')
-                                <li><a href="{{ route('fournisseur.index') }}">fournisseurs</a></li>
-                              @endcan
-                              @can('client-list')
-                                <li><a href="{{ route('client.index') }}">clients</a></li>
-                              @endcan
-                          </ul>
-                        </li>
+                          <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                  <i class="dripicons-device-desktop"></i>
+                                  <span>crm</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                @can('fournisseur-list')
+                                  <li><a href="{{ route('fournisseur.index') }}">fournisseurs</a></li>
+                                @endcan
+                                @can('client-list')
+                                  <li><a href="{{ route('client.index') }}">clients</a></li>
+                                @endcan
+                            </ul>
+                          </li>
                         @endcanany
 
                         @can('ligneAchat-list')
@@ -162,6 +162,9 @@
                                     @endcan
                                     @can('achatPaiement-list')
                                       <li><a href="{{ route('marque.index') }}">marques</a></li>
+                                    @endcan
+                                    @can('achatPaiement-list')
+                                      <li><a href="{{ route('livraison.index') }}">livraisons</a></li>
                                     @endcan
                                 </ul>
                               </li>

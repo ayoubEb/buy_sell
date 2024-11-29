@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignIdFor(Entreprise::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('num')->unique()->nullable();
             $table->string('statut')->nullable();
+            $table->boolean('etat_livraison')->default(0);
             $table->double('ht')->default(0);
             $table->double('ttc')->default(0);
             $table->double('ht_tva')->default(0);

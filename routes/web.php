@@ -12,6 +12,7 @@ use App\Http\Controllers\HistoriqueController;
 use App\Http\Controllers\LigneAchatController;
 use App\Http\Controllers\LigneRapportController;
 use App\Http\Controllers\LigneVenteController;
+use App\Http\Controllers\LivraisonController;
 use App\Http\Controllers\MarqueController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\ProfilController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\TauxTvaController;
 use App\Http\Controllers\UniteMesureController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VenteController;
+use App\Http\Controllers\VenteLivraisonController;
 use App\Http\Controllers\VentePaiementController;
 use Illuminate\Support\Facades\Route;
 
@@ -58,7 +60,14 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource("/achatPaiement",AchatPaiementController::class);
     Route::resource("/ventePaiement",VentePaiementController::class);
     Route::resource('marque', MarqueController::class);
-
+    Route::resource('venteLivraison', VenteLivraisonController::class)->except("create");
+    Route::resource('livraison', LivraisonController::class);
+    Route::controller(LivraisonController::class)->group(function(){
+      Route::get('/getMontant','livraisonPrice')->name("livraisonPrice");
+    });
+    Route::controller(VenteLivraisonController::class)->group(function(){
+      Route::get('vente/{id}/addLivraison','add')->name("venteLivraison.add");
+    });
     Route::get('/ligneAchat/{id}/addProduits',[AchatController::class,'add'])->name("achat.new");
     Route::controller(AchatPaiementController::class)->group(function(){
       Route::get('/achatPaiement/{achatPaiement}/minInfo','minInfo')->name("achatPaiement.minInfo");
