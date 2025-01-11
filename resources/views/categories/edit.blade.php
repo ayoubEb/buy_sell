@@ -4,12 +4,14 @@
     Modification catégorie
 @endsection
 @section('content')
-  <h6 class="title-header mb-2">
-    <a href="{{ route('categorie.index') }}" class="btn btn-brown-outline px-4 py-1">
-      <span class="mdi mdi-arrow-left-thick mdi-24px"></span>
-    </a>
-    modifier le categorie : {{ $categorie->nom }}
-  </h6>
+  <div class="d-md-flex justify-content-between align-items-center">
+    <h6 class="title-header">
+      <a href="{{ route('categorie.index') }}" class="btn btn-brown-outline px-4 py-1 waves-effect waves-light me-2">
+        <span class="mdi mdi-arrow-left mdi-18px align-middle"></span>
+      </a>
+      catégorie : {{ $categorie->nom }}
+    </h6>
+  </div>
 
   <div class="card">
     <div class="card-body p-2">
@@ -18,7 +20,7 @@
           @if (isset($categorie->image))
             <img src="{{ asset('storage/images/category/'.$categorie->image) }}" alt="" class="img-fluid">
             @else
-            <img src="{{ asset('images/default.jpg') }}" alt="" class="img-fluid">
+            <img src="{{ asset('images/default.webp') }}" alt="" class="img-fluid">
           @endif
         </div>
         <div class="col-lg-8">

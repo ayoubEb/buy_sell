@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Entreprise;
 use App\Models\LigneVente;
 use App\Models\Produit;
 use App\Models\Stock;
@@ -12,18 +13,20 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 class LigneVenteController extends Controller
 {
   function __construct()
   {
-    $this->middleware('permission:ligneVente-list|ligneVente-nouveau|ligneVente-modification', ['only' => ['index','show','now']]);
+    $this->middleware('permission:ligneVente-list|ligneVente-nouveau|ligneVente-modification|ligneVente-display', ['only' => ['index','show']]);
 
     $this->middleware('permission:ligneVente-nouveau', ['only' => ['create','store']]);
 
     $this->middleware('permission:ligneVente-modification', ['only' => ['edit','update']]);
 
   }
+
   /**
    * Display a listing of the resource.
    *
@@ -32,6 +35,13 @@ class LigneVenteController extends Controller
   public function index()
   {
     $commandes   = LigneVente::all();
+    foreach($commandes as $commande)
+    {
+      $today = Carbon::today();
+      $toDate       = Carbon::parse($today);
+      $fromDate     = Carbon::parse($commande->datePaiement);
+      $commande->delai = $toDate->diffInDays($fromDate);
+    }
     $all      = [
       'commandes'=>$commandes,
     ];
@@ -73,12 +83,13 @@ class LigneVenteController extends Controller
     $request->validate([
       "client"         => ["required"],
       "remise_facture" => ["required","numeric"],
+      "datePaiement"   => ["required","date"],
       "tva"            => ["required","numeric" , "exists:taux_tvas,valeur"],
     ]);
     $count_cmd = LigneVente::withTrashed()->count();
-    $reference     = "FAC-" . str_pad($count_cmd + 1, 6, "0", STR_PAD_LEFT);
-    $mois          = date("m-Y",strtotime($request->date_facture ?? Carbon::today() ));
-    $tva           = DB::table("taux_tvas")->where("valeur",$request->tva)->first()->valeur;
+    $reference = "FAC-" . str_pad($count_cmd + 1, 6, "0", STR_PAD_LEFT);
+    $mois      = date("m-Y",strtotime($request->date_facture ?? Carbon::today() ));
+    $tva       = DB::table("taux_tvas")->where("valeur",$request->tva)->first()->valeur;
     $ligneVente = LigneVente::create([
       "client_id"     => $request->client,
       "num"           => $reference,
@@ -87,7 +98,7 @@ class LigneVenteController extends Controller
       "dateCreation"  => Carbon::today(),
       "taux_tva"      => $tva,
       "remise"        => $request->remise_vente ?? 0,
-      "entreprise_id" => $request->entreprise_id,
+      "entreprise_id" => Entreprise::count() == 1 ? Entreprise::first()->id : $request->entreprise_id,
       "payer"         => 0,
       "datePaiement"  => $request->datePaiement,
       "mois"          => $mois,
@@ -121,10 +132,10 @@ class LigneVenteController extends Controller
     }
     $sum_ht     = Vente::where("ligne_vente_id",$ligneVente->id)->sum("montant");   // sum montants
     $sum_qte    = Vente::where("ligne_vente_id",$ligneVente->id)->sum("quantite");  // sum qte
-    $ht_tva     = $sum_ht * (1 + ($tva / 100));                                       // ht tva
-    $remise_ht  = $sum_ht * floatval($request->remise_facture / 100);                             // remise ht
-    $remise_ttc = floatval($remise_ht) * (1 + ($tva / 100));                          // remise ttc
-    $ttc_net    = $ht_tva - $remise_ttc;                                              // net payer
+    $ht_tva     = $sum_ht * (1 + ($tva / 100));                                     // ht tva
+    $remise_ht  = $sum_ht * floatval($request->remise_facture / 100);               // remise ht
+    $remise_ttc = floatval($remise_ht) * (1 + ($tva / 100));                        // remise ttc
+    $ttc_net    = $ht_tva - $remise_ttc;                                            // net payer
     $ligneVente->update([
       "ttc"         => $ttc_net,
       "ht"          => $sum_ht,
@@ -135,6 +146,7 @@ class LigneVenteController extends Controller
     ]);
     $this->updateClient($ligneVente->client_id);
     // toast("L'enregistrement du facture effectuée","success");
+    Session::flash("success","L'enregistrement de vente effectuée");
     return redirect()->route("ligneVente.index");
 
   }
@@ -245,7 +257,7 @@ class LigneVenteController extends Controller
       StockSuivi::create([
         "stock_id"       => $stock->id,
         "quantite"       => $vente->quantite,
-        "date_mouvement" => Carbon::today(),
+        "date_suivi" => Carbon::today(),
         "fonction"       => "vente_validé",
       ]);
 
@@ -271,7 +283,7 @@ class LigneVenteController extends Controller
     StockSuivi::create([
       "stock_id"       => $stock_id,
       "quantite"       => $vente->quantite,
-      "date_mouvement" => Carbon::now(),
+      "date_suivi" => Carbon::now(),
       "fonction"       => "vente_réserver",
     ]);
   }
@@ -418,7 +430,7 @@ class LigneVenteController extends Controller
     elseif ($number < 1000000000) {
     return self::asLetters((int)($number/1000000)).' '.self::asLetters(1000000).($number%1000000 > 0 ? ' '.self::asLetters($number%1000000): '');
     }
-}
+  }
 
 
 }

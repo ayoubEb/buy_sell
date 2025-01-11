@@ -1,11 +1,11 @@
 @extends('layouts.master')
-@section('title')
-taux tva : nouveau
-@endsection
 @section('content')
-
-
-
+<h4 class="title-header">
+  <a href="{{ route('tauxTva.index') }}" class="btn btn-brown-outline px-4 py-1 waves-effect waves-light">
+    <span class="mdi mdi-arrow-left mdi-18px align-middle"></span>
+  </a>
+  nouveau taux tva
+</h4>
 <div class="card">
   <div class="card-body p-2">
     <div class="row justify-content-center">
@@ -14,7 +14,7 @@ taux tva : nouveau
           @csrf
           <div class="form-group mb-2">
             <label for="">nom</label>
-            <input type="text" name="nom" class="form-control @error('nom') is-invalid @enderror" value="{{ old('nom') }}">
+            <input type="text" name="nom" class="form-control fc-p @error('nom') is-invalid @enderror" value="{{ old('nom') }}">
             @error('nom')
               <strong class="invalid-feedback">
                 {{ $message }}
@@ -23,7 +23,7 @@ taux tva : nouveau
           </div>
           <div class="form-group mb-2">
             <label for="">Valeur</label>
-            <input type="number" name="valeur" id="" min="0" step="any" class="form-control @error('valeur') is-invalid @enderror" value="{{ old('valeur') }}">
+            <input type="number" name="valeur" id="" min="0" step="any" class="form-control fc-p @error('valeur') is-invalid @enderror" value="{{ old('valeur') }}">
             @error('valeur')
               <strong class="invalid-feedback">
                 {{ $message }}
@@ -33,7 +33,7 @@ taux tva : nouveau
 
           <div class="form-group mb-2">
             <label for="" class="form-label">statut</label>
-            <select name="statut" id="" class="form-select">
+            <select name="statut" id="" class="form-select fc-p">
               <option value="">-- choisir le statut --</option>
               <option value="1" {{ old("statut") == 1 ? 'selected' : '' }}>Activé</option>
               <option value="0" {{ old("statut") == 0 ? 'selected' : '' }}>Désactivé</option>
@@ -43,10 +43,7 @@ taux tva : nouveau
             <label for="">description</label>
             <textarea name="description" id="" rows="10" class="form-control"> {{old("description")}}</textarea>
           </div>
-          <div class="d-flex justify-content-between">
-            <a href="{{ url()->previous() }}" class="btn btn-retour waves-effect waves-light">
-              <span>Retour</span>
-            </a>
+          <div class="d-flex justify-content-center">
             <button type="submit" class="btn btn-vert waves-effect waves-light">
               <span>Enregistrer</span>
             </button>

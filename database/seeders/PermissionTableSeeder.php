@@ -17,8 +17,6 @@ class PermissionTableSeeder extends Seeder
         $permissions = [
             'role-list','role-nouveau','role-modification','role-suppression','role-display',
             'livraison-list','livraison-nouveau','livraison-modification','livraison-suppression','livraison-display',
-            'categorieCaisse-list','categorieCaisse-nouveau','categorieCaisse-modification','categorieCaisse-suppression','categorieCaisse-display',
-            'caisse-list','caisse-nouveau','caisse-modification','caisse-suppression','caisse-display',
             'produit-list','produit-nouveau','produit-modification','produit-suppression','produit-display',
             'user-list','user-nouveau','user-modification','user-suppression','user-display',
             'fournisseur-list','fournisseur-nouveau','fournisseur-modification','fournisseur-suppression','fournisseur-display',
@@ -33,8 +31,12 @@ class PermissionTableSeeder extends Seeder
             'categorie-list','categorie-nouveau','categorie-modification','categorie-suppression','categorie-display',
             'stock-list','stock-nouveau','stock-modification','stock-display',
             'stockSuivi-list','stockSuivi-nouveau',
-            'marque-list','marque-nouveau','marque-mofication','marque-suppression',
-            'tauxTva-list','tauxTva-nouveau','tauxTva-modification','tauxTva-suppression',
+            'tauxTva-list','tauxTva-nouveau','tauxTva-modification','tauxTva-suppression','tauxTva-display',
+            'comptoir-list','comptoir-nouveau','comptoir-modification','comptoir-suppression','comptoir-display',
+            'venteComptoir-list','venteComptoir-nouveau','venteComptoir-modification','venteComptoir-suppression','venteComptoir-display',
+            'depot-nouveau','depot-modification','depot-list','depot-display','depot-suppression',
+            'stockDepot-nouveau','stockDepot-modification','stockDepot-list','stockDepot-display',
+            'depotSuivi-nouveau','depotSuivi-list','depotSuivi-display',
          ];
 
 

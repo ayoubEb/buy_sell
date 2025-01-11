@@ -1,25 +1,22 @@
 @extends('layouts.master')
-@section('title')
-  Liste des fournisseurs
-@endsection
 @section('content')
-<div class="row">
-  <div class="col-12">
-    <div class="page-title-box d-flex align-items-center justify-content-between">
-      <h4 class="page-title mb-0 font-size-18">Liste des fournisseurs</h4>
-    </div>
-  </div>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h4 class="title-header">
+    liste des fournisseurs
+  </h4>
+  @can('fournisseur-nouveau')
+    <a href="{{ route('fournisseur.create') }}" class="btn btn-brown px-4 waves-effect waves-light">
+      <span class="mdi mdi-plus-thick"></span>
+    </a>
+  @endcan
 </div>
 <div class="card">
   <div class="card-body p-2">
-    @can('fournisseur-nouveau')
-      <a href="{{ route('fournisseur.create') }}" class="btn btn-brown waves-effect waves-light mb-2">
-        <span>nouveau</span>
-      </a>
-    @endcan
+    @include('layouts.session')
     <div class="table-responsive">
       <table class="table table-bordered m-0 table-customize">
-        <thead class="table-success">
+        <thead>
           <tr>
             <th>raison sociale</th>
             <th>rc</th>
@@ -92,18 +89,18 @@
               @canany(['fournisseur-display', 'fournisseur-modification', 'fournisseur-suppression'])
                 <td class="align-middle">
                   @can('fournisseur-modification')
-                    <a href="{{ route('fournisseur.edit',$fournisseur) }}" class="btn btn-primary py-1 px-2 rounded-circle waves-effect waves-light">
+                    <a href="{{ route('fournisseur.edit',$fournisseur) }}" class="btn btn-primary p-icon waves-effect waves-light">
                       <i class="mdi mdi-pencil-outline align-middle"></i>
                     </a>
                   @endcan
                   @can('fournisseur-display')
-                    <a href="{{ route('fournisseur.show',$fournisseur) }}" class="btn btn-warning py-1 px-2 rounded-circle waves-effect waves-light">
+                    <a href="{{ route('fournisseur.show',$fournisseur) }}" class="btn btn-warning p-icon waves-effect waves-light">
                       <i class="mdi mdi-eye-outline align-middle"></i>
                     </a>
                   @endcan
                   @can('fournisseur-suppression')
-                    <button type="button" class="btn py-1 px-2 rounded-circle waves-effect waves-light btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $fournisseur->id }}">
-                      <i class="mdi mdi-trash-can" style="font-size: 0.90rem;"></i>
+                    <button type="button" class="btn p-icon waves-effect waves-light btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $fournisseur->id }}">
+                      <i class="mdi mdi-trash-can align-middle"></i>
                     </button>
                     <div class="modal fade" id="delete{{ $fournisseur->id }}" tabindex="-1" aria-labelledby="varyingModalLabel" aria-hidden="true">
                       <div class="modal-dialog modal-md modal-dialog-centered">
@@ -114,13 +111,17 @@
                               @method("DELETE")
                               <h3 class="text-primary mb-3 text-center">Confirmer la suppression</h3>
                               <h6 class="mb-2 fw-bolder text-center text-muted">
-                                Voulez-vous vraiment déplacer du fournisseur vers la corbeille
+                                Voulez-vous vraiment suppression du fournisseur ?
                               </h6>
                               <h6 class="text-danger mb-2 text-center">{{ $fournisseur->raison_sociale ?? '' }}</h6>
-                              <div class="d-flex justify-content-center">
-                                <button type="submit" class="btn btn-vert waves-effect waves-light me-2">
-                                  Je confirme
-                                </button>
+                              <div class="row">
+                                <div class="col-6">
+                                  <button type="submit" class="btn btn-vert waves-effect waves-light w-100">
+                                    Je confirme
+                                  </button>
+
+                                </div>
+                                <div class="col"></div>
                                 <button type="button" class="btn btn-orange waves-effect waves-light" data-bs-dismiss="modal" aria-label="btn-close">
                                   Annuler
                                 </button>

@@ -1,12 +1,20 @@
 @extends('layouts.master')
 @section('content')
-<div class="row">
-  <div class="col-12">
-    <div class="page-title-box d-flex align-items-center justify-content-between">
-      <h4 class="page-title mb-0 font-size-18">modification de fournisseur {{ $fournisseur->identifiant }} </h4>
-    </div>
-  </div>
+<div class="d-md-flex justify-content-between align-items-center">
+  <h6 class="title-header">
+    <a href="{{ route('fournisseur.index') }}" class="btn btn-brown-outline px-4 py-1 waves-effect waves-light me-2">
+      <span class="mdi mdi-arrow-left mdi-18px align-middle"></span>
+    </a>
+    fournisseur : {{ $fournisseur->raison_sociale }}
+  </h6>
+  @can('fournisseur-modification')
+    <a href="{{ route('fournisseur.edit',$fournisseur) }}" class="btn btn-darkLight waves-effect waves-light">
+      <span class="mdi mdi-pencil-outline align-middle"></span>
+      <span>modification</span>
+    </a>
+  @endcan
 </div>
+
 <div class="card">
   <div class="card-body p-2">
     <form action="{{ route('fournisseur.update',$fournisseur) }}" method="post">
@@ -90,10 +98,7 @@
 
       </div>
 
-      <div class="d-flex justify-content-between">
-        <a href="{{ route('fournisseur.index') }}" class="btn btn-brown waves-effect waves-light">
-          retour
-        </a>
+      <div class="d-flex justify-content-center">
         <button type="submit" class="btn btn-vert waves-effect waves-light">
           <span>mettre à jour</span>
         </button>

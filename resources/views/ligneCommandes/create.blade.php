@@ -57,23 +57,34 @@
 
               <div class="col mb-2">
                 <div class="form-group">
-                  <label for="" class="form-label">date</label>
+                  <label for="" class="form-label">date commande</label>
                   <input type="date" id="" name="date_facture" class="form-control" value="{{ old('date_facture') == null ? date("Y-m-d") : old('date_facture') }}">
                 </div>
               </div>
 
-
               <div class="col mb-2">
                 <div class="form-group">
-                  <label for="" class="form-label">Entreprise</label>
-                  <select name="entreprise_id" id="" class="form-select @error('entreprise_id') is-invalid @enderror">
-                    <option value="">Séléctionner l'entreprise</option>
-                    @foreach ($entreprises as $entreprise)
-                        <option value="{{ $entreprise->id }}"  @if(count($entreprises)==1) selected @endif>{{ $entreprise->raison_sociale }}</option>
-                    @endforeach
-                  </select>
+                  <label for="" class="form-label">date paiement</label>
+                  <input type="date" id="" name="datePaiement" class="form-control" value="{{ old('datePaiement') == null ? date("Y-m-d") : old('datePaiement') }}">
+                  @error('datePaiement')
+                    <strong class="invalid-feedback">{{ $message }}</strong>
+                  @enderror
                 </div>
               </div>
+
+              @if (count($entreprises) > 1)
+                <div class="col mb-2">
+                  <div class="form-group">
+                    <label for="" class="form-label">Entreprise</label>
+                    <select name="entreprise_id" id="" class="form-select @error('entreprise_id') is-invalid @enderror">
+                      <option value="">Séléctionner l'entreprise</option>
+                      @foreach ($entreprises as $entreprise)
+                          <option value="{{ $entreprise->id }}"  @if(count($entreprises)==1) selected @endif>{{ $entreprise->raison_sociale }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
+              @endif
 
               <div class="col mb-2">
                 <div class="form-group">

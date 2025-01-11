@@ -1,74 +1,83 @@
 @extends('layouts.master')
-@section('title')
-Liste des taux tvas
-@endsection
 @section('content')
-
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h4 class="title-header">
+    Liste des taux tvas
+  </h4>
+  @can('tauxTva-nouveau')
+  <a href="{{ route('tauxTva.create') }}" class="btn btn-brown px-4 waves-effect waves-light">
+    <span class="mdi mdi-plus-thick"></span>
+  </a>
+  @endcan
+</div>
 <div class="card">
   <div class="card-body p-2">
-    @can("tauxTva-nouveau")
-      <a href="{{ route('tauxTva.create') }}" class="btn btn-lien waves-effect waves-light mb-2">
-        <span>nouveau</span>
-      </a>
-    @endcan
+    @include('layouts.session')
     <div class="table-responsive">
-      <table class="table table-bordered table-sm m-0 datatable" >
+      <table class="table table-bordered table-customize m-0" >
         <thead class="table-primary">
           <tr>
             <th>nom</th>
             <th>valeur</th>
             <th>description</th>
-            @canany(['tauxTva-modification', 'tauxTva-suppression'])
-              <th>actions</th>
+            @canany(['tauxTva-modification', 'tauxTva-suppression','tauxTva-display'])
+              <th>opérations</th>
             @endcanany
           </tr>
         </thead>
         <tbody>
           @forelse ($tauxTvas as $k =>  $tauxTva)
             <tr>
-              <td class="align-middle"> {{ $tauxTva->nom ?? '' }} </td>
+              <td class="align-middle">
+                {!! $tauxTva->nom != '' ? $tauxTva->nom : '<i class="text-muted">N / A</i>' !!}
+              </td>
               <td class="align-middle"> {{ $tauxTva->valeur ?? '' }}% </td>
-              <td class="align-middle"> {{ $tauxTva->description ?? '' }} </td>
-                @canany(['tauxTva-modification', 'tauxTva-suppression'])
+              <td class="align-middle">
+                {!! $tauxTva->description != '' ? $tauxTva->description : '<i class="text-muted">N / A</i>' !!}
+              </td>
+                @canany(['tauxTva-modification', 'tauxTva-suppression','tauxTva-display'])
                   <td class="align-middle">
                     @can('tauxTva-modification')
-                      <a href="{{ route('tauxTva.edit',$tauxTva->id) }}" class="btn btn-primary p-0 px-1 waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="bottom" title="modifier">
-                        <i class="mdi mdi-pencil-outline align-middle"></i>
+                      <a href="{{ route('tauxTva.edit',$tauxTva) }}" class="btn btn-primary p-icon waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="bottom" title="modifier">
+                        <span class="mdi mdi-pencil-outline align-middle"></span>
+                      </a>
+                    @endcan
+                    @can('tauxTva-display')
+                      <a href="{{ route('tauxTva.show',$tauxTva) }}" class="btn btn-dark p-icon waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="bottom" title="modifier">
+                        <span class="mdi mdi-eye-outline align-middle"></span>
                       </a>
                     @endcan
                     @can('tauxTva-suppression')
-                      <button type="button" class="btn btn-danger p-0 px-1 waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#delete{{ $k }}"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="supprimer">
-                        <span class="mdi mdi-trash-can"></span>
+                      <button type="button" class="btn btn-danger p-icon waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#delete{{ $k }}"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="supprimer">
+                        <span class="mdi mdi-trash-can align-middle"></span>
                       </button>
                       <div class="modal fade" id="delete{{ $k }}" tabindex="-1" aria-labelledby="varyingModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-md modal-dialog-centered">
                           <div class="modal-content">
                             <div class="modal-body">
-                              <form action="{{ route('tauxTva.destroy',$tauxTva->id) }}" method="POST">
+                              <form action="{{ route('tauxTva.destroy',$tauxTva) }}" method="POST">
                                 @csrf
                                 @method("DELETE")
                                 <h3 class="text-primary mb-3 text-center">Confirmer la suppression</h3>
 
                                 <h6 class="mb-2 fw-bolder text-center text-muted">
-                                    Voulez-vous vraiment déplacer du tauxTva vers la corbeille
+                                    Voulez-vous vraiment suppression du tauxTva ?
                                 </h6>
                                 <h6 class="text-danger mb-2 text-center">{{ $tauxTva->valeur }}</h6>
-                                <div class="row row-cols-2">
-                                  <div class="justify-content-evenly">
-                                    <div class="col">
-                                      <button type="submit" class="btn btn-vert waves-effet waves-light">
+                                  <div class="row">
+                                    <div class="col-6">
+                                      <button type="submit" class="btn btn-vert waves-effet waves-light w-100">
                                         <span class="mdi mdi-checkbox-marked-circle-outline"></span>
                                         Je confirme
                                       </button>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-6">
                                       <button type="button" class="btn btn-orange waves-effect waves-light w-100" data-bs-dismiss="modal" aria-label="btn-close">
                                         <span class="mdi mdi-close"></span>
                                           Annuler
                                       </button>
                                     </div>
                                   </div>
-                                </div>
                               </form>
                             </div>
                           </div>

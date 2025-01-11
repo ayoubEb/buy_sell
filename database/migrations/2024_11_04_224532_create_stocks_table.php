@@ -18,13 +18,16 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Produit::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string("num")->nullable()->unique();
+            $table->integer("quantite")->default(0);
             $table->integer("disponible")->default(0);
+            $table->integer("reste")->default(0);
             $table->date("date_stock")->nullable();
             $table->integer("min")->default(0);
             $table->integer("sortie")->default(0);
             $table->integer("max")->default(0);
             $table->integer("initial")->default(0);
             $table->integer('qte_achat')->default(0);
+            $table->integer('qte_alert')->default(0);
             $table->integer('qte_vente')->default(0);
             $table->integer("qte_augmenter")->default(0);
             $table->integer("qte_achatRes")->default(0);

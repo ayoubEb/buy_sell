@@ -4,19 +4,9 @@ Liste des stocks
 
 @endsection
 @section('content')
-  <div class="row">
-    <div class="col-12">
-      <div class="page-title-box d-flex align-items-center justify-content-between">
-        <h4 class="page-title mb-0 font-size-18">liste des stocks</h4>
-        <div class="page-title-right">
-          <ol class="breadcrumb m-0">
-            <li class="breadcrumb-item active">liste des stocks</li>
-          </ol>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <h6 class="title-header">
+    liste des stocks
+  </h6>
   <div class="card">
     <div class="card-body p-2">
       @include('layouts.session')
@@ -27,13 +17,14 @@ Liste des stocks
               <th>référence</th>
               <th>désignation</th>
               <th>quantite</th>
+              <th>disponible</th>
               <th>sortie</th>
               <th>initial</th>
               <th>Reste</th>
               <th>min</th>
               <th>max</th>
               @canany(['stock-display', 'stock-modficiation', 'stock-suppression','stockHisorique-nouveau'])
-                <th>actions</th>
+                <th>opérations</th>
               @endcanany
             </tr>
           </thead>
@@ -48,8 +39,16 @@ Liste des stocks
                 </td>
                 <td class="align-middle">
                   {!!
-                    $produit->quantite != '' ?
-                    $produit->quantite : 0
+                    $produit->stock  &&
+                    $produit->stock->quantite != '' ?
+                    $produit->stock->quantite : 0
+                  !!}
+                </td>
+                <td class="align-middle">
+                  {!!
+                    $produit->stock  &&
+                    $produit->stock->disponible != '' ?
+                    $produit->stock->disponible : 0
                   !!}
                 </td>
                 <td class="align-middle">
@@ -91,24 +90,24 @@ Liste des stocks
                   <td class="align-middle">
                     @if (!isset($produit->stock))
                       @can('stock-nouveau')
-                        <a href="{{ route('stock.new',$produit) }}" class="btn btn-dark py-1 px-2 rounded-circle waves-effect waves-light">
-                          <i class="mdi mdi-plus-thick align-middle"></i>
+                        <a href="{{ route('stock.new',$produit) }}" class="btn btn-dark p-icon waves-effect waves-light">
+                          <span class="mdi mdi-plus-thick align-middle"></span>
                         </a>
                       @endcan
                     @else
                       @can('stock-display')
-                        <a href="{{ route('stock.show',$produit->stock->id) }}" class="btn btn-warning py-1 px-2 rounded-circle waves-effect waves-ligt">
-                          <i class="mdi mdi-eye-outline align-middle"></i>
+                        <a href="{{ route('stock.show',$produit->stock->id) }}" class="btn btn-dark p-icon waves-effect waves-ligt">
+                          <span class="mdi mdi-eye-outline align-middle"></span>
                         </a>
                       @endcan
                       @can('stock-modification')
-                        <a href="{{ route('stock.edit',$produit->stock->id) }}" class="btn btn-primary py-1 px-2 rounded-circle waves-effect waves-ligt">
-                          <i class="mdi mdi-pencil-outline align-middle"></i>
+                        <a href="{{ route('stock.edit',$produit->stock->id) }}" class="btn btn-primary p-icon waves-effect waves-ligt">
+                          <span class="mdi mdi-pencil-outline align-middle"></span>
                         </a>
                       @endcan
                       @can('stockSuivi-nouveau')
-                        <button type="button" class="btn btn-success waves-effect waves-light py-1 px-2 rounded-circle" data-bs-toggle="modal" data-bs-target="#newAdd{{ $produit->id }}">
-                          <i class="mdi mdi-plus-thick align-middle"></i>
+                        <button type="button" class="btn btn-success waves-effect waves-light p-icon" data-bs-toggle="modal" data-bs-target="#newAdd{{ $produit->id }}">
+                          <span class="mdi mdi-plus-thick align-middle"></span>
                         </button>
                         <div class="modal fade" id="newAdd{{ $produit->id }}" tabindex="-1" aria-labelledby="varyingModalLabel" aria-hidden="true">
                           <div class="modal-dialog modal-md modal-dialog-centered">
@@ -121,16 +120,37 @@ Liste des stocks
                                   @csrf
                                   <input type="hidden" name="stock" value="{{ $produit->stock->id }}">
                                   <div class="form-group mb-2">
-                                    <label for="" class="form-label">Quantié</label>
+                                    <label for="" class="form-label">Quantité</label>
                                     <input type="number" name="qte_add" id="" min="1" class="form-control" required>
                                   </div>
-                                  <div class="d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-vert waves-effect waves-light me-2">
-                                      enregistrer
-                                    </button>
-                                    <button type="button" class="btn btn-orange waves-effect waves-light" data-bs-dismiss="modal" aria-label="btn-close">
-                                      Annuler
-                                    </button>
+                                  @if (count($produit->depots) > 0)
+                                    <div class="form-group mb-2">
+                                      <label for="" class="form-label">depôt</label>
+                                      <select name="depot_add" id="" class="form-select">
+                                        <option value="">-- Séléctionner --</option>
+                                        @foreach ($produit->depots as $dep_add)
+                                          <option value="{{ $dep_add->id }}" {{ count($produit->depots) == 1 ? 'selected':'' }}> {{ $dep_add->num_depot }} </option>
+                                        @endforeach
+                                      </select>
+                                    </div>
+                                  @endif
+                                  @if ($produit->check_default == true)
+                                    <div class="form-group mb-2">
+                                      <label for="" class="form-label">depot default</label>
+                                      <input type="text" name="default_add" id="" class="form-control" value="{{ $produit->depot_default->num_depot }}">
+                                    </div>
+                                  @endif
+                                  <div class="row justify-content-center">
+                                    <div class="col-6">
+                                      <button type="submit" class="btn btn-vert waves-effect waves-light w-100">
+                                        enregistrer
+                                      </button>
+                                    </div>
+                                    <div class="col-6">
+                                      <button type="button" class="btn btn-orange waves-effect waves-light w-100" data-bs-dismiss="modal" aria-label="btn-close">
+                                        Annuler
+                                      </button>
+                                    </div>
                                   </div>
                                 </form>
                               </div>
@@ -138,7 +158,7 @@ Liste des stocks
                           </div>
                         </div>
 
-                        <button type="button" class="btn btn-danger waves-effect waves-light py-1 px-2 rounded-circle" data-bs-toggle="modal" data-bs-target="#ruprute{{ $produit->id }}">
+                        <button type="button" class="btn btn-danger waves-effect waves-light p-icon" data-bs-toggle="modal" data-bs-target="#ruprute{{ $produit->id }}">
                             <i class="mdi mdi-minus"></i>
                         </button>
                         <div class="modal fade" id="ruprute{{ $produit->id }}" tabindex="-1" aria-labelledby="varyingModalLabel" aria-hidden="true">
@@ -154,13 +174,34 @@ Liste des stocks
                                     <label for="" class="form-label">Quantié</label>
                                     <input type="number" name="qte_demi" id="" min="1" max="{{ $produit->reste }}" class="form-control" required>
                                   </div>
-                                  <div class="d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-vert waves-effect waves-light me-2">
-                                      Je confirme
-                                    </button>
-                                    <button type="button" class="btn btn-orange waves-effect waves-light" data-bs-dismiss="modal" aria-label="btn-close">
-                                      Annuler
-                                    </button>
+                                  @if (count($produit->depots) > 0)
+                                    <div class="form-group mb-2">
+                                      <label for="" class="form-label">depôt</label>
+                                      <select name="depot_add" id="" class="form-select">
+                                        <optio value="">-- Séléctionner --</optio  n>
+                                        @foreach ($produit->depots as $dep_add)
+                                          <option value="{{ $dep_add->id }}" {{ count($produit->depots) == 1 ? 'selected':'' }}> {{ $dep_add->num_depot }} </option>
+                                        @endforeach
+                                      </select>
+                                    </div>
+                                  @endif
+                                  @if ($produit->check_default == true)
+                                  <div class="form-group mb-2">
+                                    <label for="" class="form-label">depot default</label>
+                                    <input type="text" name="default_add" id="" class="form-control" value="{{ $produit->depot_default->num_depot }}">
+                                  </div>
+                                @endif
+                                  <div class="row justify-content-center">
+                                    <div class="col-6">
+                                      <button type="submit" class="btn btn-vert waves-effect waves-light w-100">
+                                        Je confirme
+                                      </button>
+                                    </div>
+                                    <div class="col-6">
+                                      <button type="button" class="btn btn-orange waves-effect waves-light w-100" data-bs-dismiss="modal" aria-label="btn-close">
+                                        Annuler
+                                      </button>
+                                    </div>
                                   </div>
                                 </form>
                               </div>

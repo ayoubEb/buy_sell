@@ -1,25 +1,28 @@
 @extends('layouts.master')
-@section('title')
-    N.A
-@endsection
 @section('content')
+<h6 class="title-header mb-2">
+  <a href="{{ route('ligneAchat.index') }}" class="btn btn-brown-outline px-4 py-1">
+    <span class="mdi mdi-arrow-left-thick mdi-18px"></span>
+  </a>
+  achat : nouveau
+</h6>
 <form action="{{ route('ligneAchat.store') }}" method="post">
   @csrf
   <div class="row">
     {{-- ======================== start bloc base information ========================= --}}
     <div class="col-lg-8">
-      <h6 class="title mb-1">
-        <span class="">
-          base informations
-        </span>
-      </h6>
       <div class="card">
         <div class="card-body p-2">
+          <h6 class="title mb-2">
+            <span class="">
+              base informations
+            </span>
+          </h6>
           <div class="row row-cols-2">
             <div class="col mb-2">
               <div class="form-group">
                 <label for="" class="form-label">Fournisseur</label>
-                <select name="fournisseur" class="form-select @error('fournisseur') is-invalid @enderror" required>
+                <select name="fournisseur" class="form-select fc-p @error('fournisseur') is-invalid @enderror">
                   <option value="">Choisir le fournisseur</option>
                   @forelse ($fournisseurs as $fournisseur)
                     <option value="{{$fournisseur->id}}" {{ old("fournisseur") == $fournisseur->id ? "selected" : "" }}>{{ $fournisseur->raison_sociale }}</option>
@@ -37,7 +40,7 @@
             <div class="col mb-2">
               <div class="form-group">
                 <label for="" class="form-label">Statut</label>
-                <select name="statut" id="" class="form-select @error('statut') is-invalid @enderror">
+                <select name="statut" id="" class="form-select fc-p @error('statut') is-invalid @enderror">
                   <option value="">Choisir le statut</option>
                   <option value="en cours" {{ old("statut") == "en cours" || old("statut") == "" ? "selected" : 'seleced' }} >En cours</option>
                   <option value="validé" {{ old("statut") == "validé" ? "selected" : '' }}>Validé</option>
@@ -50,7 +53,7 @@
             <div class="col mb-2">
               <div class="form-group">
                 <label for="" class="form-label">Date</label>
-                <input type="date" name="date" class="form-control @error('date') is-invalid @enderror" value="{{ old("date") == '' ? date('Y-m-d') : old('date') }}">
+                <input type="date" name="date" class="form-control fc-p @error('date') is-invalid @enderror" value="{{ old("date") == '' ? date('Y-m-d') : old('date') }}">
                 @error('date')
                   <strong class="invalid-feedback">{{ $message }}</strong>
                 @enderror
@@ -59,7 +62,7 @@
             <div class="col mb-2">
               <div class="form-group">
                 <label for="" class="form-label">Date paiement</label>
-                <input type="date" name="datePaiement" class="form-control @error('datePaiement') is-invalid @enderror" value="{{ old("datePaiement") == '' ? date('Y-m-d') : old('datePaiement') }}">
+                <input type="date" name="datePaiement" class="form-control fc-p @error('datePaiement') is-invalid @enderror" value="{{ old("datePaiement") == '' ? date('Y-m-d') : old('datePaiement') }}">
                 @error('datePaiement')
                   <strong class="invalid-feedback">{{ $message }}</strong>
                 @enderror
@@ -69,7 +72,7 @@
             <div class="col mb-2">
               <div class="form-group">
                 <label for="" class="form-label">TVA</label>
-                <select name="tva" id="tva" class="form-select @error('tva') is-invalid @enderror" required>
+                <select name="tva" id="tva" class="form-select fc-p @error('tva') is-invalid @enderror" required>
                   <option value="">Choisir le tva</option>
                   @forelse ($tvas as $tva_valeur)
                     <option value="{{ $tva_valeur }}" {{ old('tva') == $tva_valeur || $tva_valeur == 20 ? "selected" : "" }}> {{ $tva_valeur }}% </option>
@@ -83,24 +86,25 @@
                 @enderror
               </div>
             </div>
-
-            <div class="col mb-2">
-              <div class="form-group">
-                <label for="" class="form-label">entreprise</label>
-                <select name="entreprise" class="form-select @error('tva') is-invalid @enderror">
-                  <option value="">Choisir l'entreprise</option>
-                  @forelse ($entreprises as $entreprise)
-                    <option value="{{ $entreprise->id }}" {{ old("entreprise") == $entreprise->id ? "selected" : "" }}> {{ $entreprise->raison_sociale }}</option>
-                  @empty
-                  @endforelse
-                </select>
-                @error('entreprise')
-                  <strong class="invalid-feedback">
-                    {{ $message }}
-                  </strong>
-                @enderror
+            @if (count($entreprises) > 1)
+              <div class="col mb-2">
+                <div class="form-group">
+                  <label for="" class="form-label">entreprise</label>
+                  <select name="entreprise" class="form-select fc-p @error('tva') is-invalid @enderror">
+                    <option value="">Choisir l'entreprise</option>
+                    @forelse ($entreprises as $entreprise)
+                      <option value="{{ $entreprise->id }}" {{ old("entreprise") == $entreprise->id ? "selected" : "" }}> {{ $entreprise->raison_sociale }}</option>
+                    @empty
+                    @endforelse
+                  </select>
+                  @error('entreprise')
+                    <strong class="invalid-feedback">
+                      {{ $message }}
+                    </strong>
+                  @enderror
+                </div>
               </div>
-            </div>
+            @endif
           </div>
         </div>
       </div>
@@ -108,13 +112,13 @@
     {{-- ======================== end bloc base information ========================= --}}
     {{-- ======================== start bloc resume paiement ========================= --}}
       <div class="col">
-        <h6 class="title mb-1">
-          <span>
-            paiements
-          </span>
-        </h6>
         <div class="card">
           <div class="card-body p-2">
+            <h6 class="title mb-2">
+              <span>
+                paiements
+              </span>
+            </h6>
             <div class="table-responsiv">
               <table class="table table-bordered m-0 info">
                 <tbody>
@@ -164,51 +168,56 @@
     {{-- ======================== end bloc resume paiement ========================= --}}
     </div>
 
-    <h6 class="title mb-1">
-      <span>
-        produits
-      </span>
-    </h6>
     <div class="card">
       <div class="card-body p-2" @if(count($produits) > 8) style="height: 30rem;  overflow-y: auto;" @endif>
-        <div class="table-responsive">
-          <table class="table table-bordered m-0 table-customize">
-            <thead>
-              <tr>
-                <th class="col-2">référence</th>
-                <th class="col">nom</th>
-                <th class="col-1">prix</th>
-                <th class="col-1">quantité</th>
-                <th class="col-1">remise ( % )</th>
-                <th class="col-2">montant</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach ($produits as $produit)
+        <h6 class="title mb-2">
+          <span>
+            produits
+          </span>
+        </h6>
+        <div class="d-flex justify-content-center" id="loading">
+          <span></span>
+        </div>
+        <div id="infoPro" class="d-none">
+          <div class="table-responsive">
+            <table class="table table-bordered m-0 table-customize">
+              <thead>
                 <tr>
-                  <td class="align-middle">
-                    <div class="form-check fs-12">
-                      <input type="checkbox" name="pro[]" id="p{{$produit->id}}" class="form-check-input pro" value="{{ $produit->id }}">
-                      <label for="p{{$produit->id}}" class="form-check-label">{{ $produit->reference }}</label>
-                    </div>
-                  </td>
-                  <td class="align-middle fs-12">{{ $produit->designation }}</td>
-                  <td class="align-middle fw-bold">
-                    <input type="number" name="prix[]" min="0" step="any" class="form-control price" value="{{ $produit->prix_achat ?? 0 }}">
-                  </td>
-                  <td class="align-middle">
-                    <input type="number" name="quantite[]" step="any" min="0"  id="" class="form-control form-control-sm qte" value="0" disabled>
-                  </td>
-                  <td class="align-middle">
-                      <input type="number" name="remise[]" step="any" min="0" max="100"  id="" class="form-control form-control-sm remise" value="0" disabled>
-                  </td>
-                  <td class="align-middle">
-                      <input type="number" step="any"  id="" class="form-control form-control-sm montant" disabled>
-                  </td>
+                  <th class="col-2">référence</th>
+                  <th class="col">nom</th>
+                  <th class="col-1">prix</th>
+                  <th class="col-1">quantité</th>
+                  <th class="col-1">remise ( % )</th>
+                  <th class="col-2">montant</th>
                 </tr>
-              @endforeach
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                @foreach ($produits as $produit)
+                  <tr>
+                    <td class="align-middle">
+                      <div class="form-check fs-12">
+                        <input type="checkbox" name="pro[]" id="p{{$produit->id}}" class="form-check-input pro" value="{{ $produit->id }}">
+                        <label for="p{{$produit->id}}" class="form-check-label">{{ $produit->reference }}</label>
+                      </div>
+                    </td>
+                    <td class="align-middle fs-12">{{ $produit->designation }}</td>
+                    <td class="align-middle fw-bold">
+                      <input type="number" name="prix[]" min="0" step="any" class="form-control form-control-sm price" value="{{ $produit->prix_achat ?? 0 }}">
+                    </td>
+                    <td class="align-middle">
+                      <input type="number" name="quantite[]" step="any" min="0"  id="" class="form-control form-control-sm qte" value="0" disabled>
+                    </td>
+                    <td class="align-middle">
+                        <input type="number" name="remise[]" step="any" min="0" max="100"  id="" class="form-control form-control-sm remise" value="0" disabled>
+                    </td>
+                    <td class="align-middle">
+                        <input type="number" step="any"  id="" class="form-control form-control-sm montant" disabled>
+                    </td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div class="p-2">
@@ -237,9 +246,31 @@
  <script>
 
   $(document).ready(function(){
+    document.querySelectorAll('.qte, .remise').forEach(input => {
+        input.addEventListener('input', function() {
+            const row = this.closest('tr');
+            const price = parseFloat(row.querySelector('.price').value) || 0;
+            const quantity = parseFloat(row.querySelector('.qte').value) || 0;
+            const discount = parseFloat(row.querySelector('.remise').value) || 0;
 
+            // Calculate total amount
+            let total = price * quantity;
+            if (discount > 0) {
+                total -= (total * (discount / 100));
+            }
 
+            // Update the montant field
+            row.querySelector('.montant').value = total.toFixed(2);
+        });
+    });
 
+    setTimeout(function() {
+                // Code to be executed after the delay
+                // This could include jQuery operations, such as manipulating the DOM
+                $('#infoPro').fadeIn();
+                $("#loading").addClass("d-none");
+                $("#infoPro").removeClass("d-none");
+            }, 50);
 
 
     function calculationMontant(e){

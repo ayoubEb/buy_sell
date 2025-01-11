@@ -1,15 +1,12 @@
 @extends('layouts.master')
-@section('title')
-  fournisseur : nouveau
-@endsection
 @section('content')
-<div class="row">
-  <div class="col-12">
-    <div class="page-title-box d-flex align-items-center justify-content-between">
-      <h4 class="page-title mb-0 font-size-18">nouveau fournisseur </h4>
-    </div>
-  </div>
-</div>
+<h6 class="title-header mb-2">
+  <a href="{{ route('fournisseur.index') }}" class="btn btn-brown-outline px-4 py-1">
+    <span class="mdi mdi-arrow-left-thick mdi-18px"></span>
+  </a>
+  nouveau fournisseur
+</h6>
+
 <div class="card">
   <div class="card-body p-2">
     <form action="{{ route('fournisseur.store') }}" method="post">
@@ -90,13 +87,8 @@
 
       </div>
 
-      <div class="d-flex justify-content-between">
-        @can('fournisseur-list')
-          <a href="{{ route('fournisseur.index') }}" class="btn btn-brown waves-effect waves-light">
-            liste
-          </a>
-        @endcan
-        <button type="submit" class="btn btn-vert waves-effect waves-light">
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-vert waves-effect waves-light px-5">
           <span>Enregistrer</span>
         </button>
       </div>

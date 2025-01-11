@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Stock::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string("fonction")->nullable();
             $table->integer("quantite")->nullable();
-            $table->date("date_mouvement")->nullable();
+            $table->date("date_suivi")->nullable();
             $table->datetime("deleted_at")->nullable();
             $table->timestamps();
         });

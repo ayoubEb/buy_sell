@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Achat;
+use App\Models\Entreprise;
 use App\Models\Fournisseur;
 use App\Models\LigneAchat;
 use App\Models\Produit;
 use App\Models\Stock;
 use App\Models\StockSuivi;
+use App\Models\TauxTva;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 class LigneAchatController extends Controller
 {
@@ -46,10 +47,10 @@ class LigneAchatController extends Controller
   */
   public function create()
   {
-    $fournisseurs = DB::table("fournisseurs")->select("id","raison_sociale","deleted_at")->whereNull("deleted_at")->get();
-    $produits     = DB::table("produits")->select("id","designation","prix_achat","reference","deleted_at")->whereNull("deleted_at")->get();
-    $entreprises  = DB::table("entreprises")->select("id","raison_sociale","deleted_at")->whereNull("deleted_at")->get();
-    $tvas         = DB::table("taux_tvas")->select("valeur")->pluck("valeur");
+    $fournisseurs = Fournisseur::select("id","raison_sociale")->get();
+    $produits     = Produit::select("id","designation","prix_achat","reference")->where("check_depot",1)->get();
+    $entreprises  = Entreprise::select("id","raison_sociale")->get();
+    $tvas         = TauxTva::select("valeur")->pluck("valeur");
 
     $all = [
       "fournisseurs" => $fournisseurs,
@@ -86,7 +87,7 @@ class LigneAchatController extends Controller
         "date_achat"     => $request->date ?? Carbon::today(),
         "taux_tva"       => $request->tva,
         "datePaiement"       => $request->datePaiement,
-        "entreprise_id"  => $request->entreprise_id,
+        "entreprise_id"  => Entreprise::count() > 1 ? Entreprise::first()->id : $request->entreprise_id,
         "payer"          => 0,
         "mois"           => $mois,
         "dateCreation"   => Carbon::today(),
@@ -141,7 +142,7 @@ class LigneAchatController extends Controller
         "stock_id"       => $stock->id,
         "quantite"       => $produitAchat->quantite,
         "fonction"       => "achat_reserver",
-        "date_mouvement" => Carbon::today(),
+        "date_suivi" => Carbon::today(),
       ]);
     }
     else
@@ -156,7 +157,7 @@ class LigneAchatController extends Controller
         "stock_id"       => $stock_new->id,
         "quantite"       => $produitAchat->quantite,
         "fonction"       => "achat_reserver",
-        "date_mouvement" => Carbon::today(),
+        "date_suivi" => Carbon::today(),
       ]);
     }
   }
@@ -187,7 +188,7 @@ class LigneAchatController extends Controller
    */
   public function edit(LigneAchat $ligneAchat)
   {
-    if($ligneAchat->status == "validé")
+    if($ligneAchat->statut == "validé")
     {
       return back();
     }
@@ -197,11 +198,11 @@ class LigneAchatController extends Controller
     }
     else
     {
-      $pro_ids      = DB::table("achats")->where("ligne_achat_id",$ligneAchat->id)->whereNull("deleted_at")->pluck("produit_id");
-      $count_pro    = DB::table("produits")->select("id","reference","designation","prix_achat","deleted_at")->whereNull("deleted_at")->whereNotIn("id",$pro_ids)->count();
-      $fournisseurs = DB::table("fournisseurs")->select("id","raison_sociale","deleted_at")->get();
-      $tvas         = DB::table("taux_tvas")->pluck("valeur");
-      $entreprises  = DB::table("entreprises")->select("id","raison_sociale","deleted_at")->whereNull("deleted_at")->get();
+      $pro_ids      = Achat::where("ligne_achat_id",$ligneAchat->id)->pluck("produit_id");
+      $count_pro    = Produit::select("id","reference","designation","prix_achat")->whereNotIn("id",$pro_ids)->count();
+      $fournisseurs = Fournisseur::select("id","raison_sociale")->get();
+      $tvas         = TauxTva::pluck("valeur");
+      $entreprises  = Entreprise::select("id","raison_sociale")->get();
 
       $all = [
         "ligneAchat"   => $ligneAchat,
@@ -236,12 +237,12 @@ class LigneAchatController extends Controller
         "fournisseur_id" => $request->fournisseur_id,
         "status"         => $request->status,
         "taux_tva"       => $request->tva,
-        "ttc"       => $ttc,
+        "ttc"            => $ttc,
         "reste"          => $ttc,
-        "date_achat"=>$request->date_achat
+        "date_achat"     => $request->date_achat,
+        "entreprise_id"  => Entreprise::count() == 1 ? Entreprise::first()->id : $request->entreprise,
     ]);
-    Session()->flash("update","La modification d'achat effectuée");
-    return redirect()->route('ligneAchat.index');
+    return redirect()->route('ligneAchat.index')->with("update","La modification d'achat effectuée");
 
   }
 
@@ -259,7 +260,7 @@ class LigneAchatController extends Controller
       StockSuivi::create([
         "stock_id"       => $stock->id,
         "quantite"       => $achat->quantite,
-        "date_mouvement" => Carbon::today(),
+        "date_suivi" => Carbon::today(),
         "fonction"       => "achat_validé",
       ]);
       $sum_qte = $produit->quantite + $achat->quantite;
@@ -287,7 +288,7 @@ class LigneAchatController extends Controller
       StockSuivi::create([
         "stock_id"       => $stock->id,
         "quantite"       => $achat->quantite,
-        "date_mouvement" => Carbon::today(),
+        "date_suivi" => Carbon::today(),
         "fonction"       => "achat_validé",
       ]);
       $sum_qte = $produit->quantite + $achat->quantite;

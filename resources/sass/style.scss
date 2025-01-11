@@ -6,6 +6,10 @@
   padding       : .5rem 2rem;
   font-size     : 12px;
 }
+
+.p-icon{
+  padding: 0.1rem 0.4rem;
+}
 .btn-brown{
   @extend .btn-customize;
   background: $color-brown !important;
@@ -29,7 +33,7 @@
 .btn-brown-outline{
   @extend .btn-customize;
   background-color: white;
-  border: 3px solid $color-brown;
+  border: 2px solid $color-brown !important;
   border-radius: .375rem;
   color: $color-brown;
   span{
@@ -43,21 +47,43 @@
     }
   }
 }
+
+#loading{
+    span{
+      width: 48px;
+      height: 48px;
+      border: 5px solid #FFF;
+      border-bottom-color: #FF3D00;
+      border-radius: 50%;
+      display: inline-block;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite;
+    }
+}
+.nav-tabs{
+  .nav-link{
+    text-transform: uppercase;
+    letter-spacing: .8px;
+  }
+}
 label{
   text-transform: uppercase;
   // color: black;
   font-size: smaller;
   letter-spacing: 1px;
+  font-weight: 700 !important;
 }
-.form-control,.form-select , .form-check-input{
-  border: 1px solid rgb(211, 207, 207) !important;
-  box-shadow: none !important;
-
+.fc-p,
+.form-select{
+  border        : 1px solid rgb(211, 207, 207) !important;
+  box-shadow    : none !important;
+  padding-top   : .35rem !important;
+  padding-bottom: .35rem !important;
 }
 .title-header{
   color: $color-darkLight;
   text-transform: uppercase;
-  font-size: 17px;
+  font-size: 15px;
   letter-spacing: .5px;
 
 }
@@ -71,6 +97,53 @@ label{
 #form-cheque{
   display: none;
 }
+
+
+#side-menu{
+  a.item{
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 13px;
+      letter-spacing: .8px;
+  }
+  a.item-link{
+    text-transform: capitalize;
+    letter-spacing: .8px;
+  }
+
+
+
+}
+
+.loader {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #FFF;
+  border-bottom-color: #FF3D00;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  }
+// .vertical-menu{
+//   width: 300px;
+// }
+// .navbar-brand-box{
+//   width: 300px;
+// }
+// .main-content{
+//   margin-left: 300px;
+
+// }
+  @keyframes rotation {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+  }
+@keyframes l3 {to{transform: rotate(1turn)}}
 
 // #side-menu
 // {
@@ -112,8 +185,21 @@ table.info{
   }
   tbody{
     td{
-      padding-top: .55rem;
-      padding-bottom: .55rem;
+      padding-top: .4rem;
+      padding-bottom: .4rem;
+    }
+  }
+}
+
+
+
+
+.list-group{
+  li{
+    h6{
+      font-size: smaller;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
     }
   }
 }

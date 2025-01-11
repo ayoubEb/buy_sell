@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
@@ -38,9 +39,19 @@ class Stock extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function history(): HasMany
+    public function suivis(): HasMany
     {
         return $this->hasMany(StockSuivi::class);
+    }
+
+    /**
+     * The depot that belong to the Stock
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function depots(): BelongsToMany
+    {
+        return $this->belongsToMany(Depot::class, 'stock_depots', 'stock_id', 'depot_id')->withPivot(["quantite","entre","sortie","disponible","check_default"]);
     }
 
 }

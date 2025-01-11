@@ -75,7 +75,7 @@ class VenteController extends Controller
             StockSuivi::create([
               "stock_id"       => $stock->id,
               "quantite"       => $qte,
-              "date_mouvement" => Carbon::today(),
+              "date_suivi" => Carbon::today(),
               "fonction"       => "vente_réserver",
             ]);
             Vente::create([
@@ -88,14 +88,14 @@ class VenteController extends Controller
             ]);
           }
         }
-        $tva               = $commande->taux_tva;
-        $remise       = $commande->remise;
-        $sum_ht         = Vente::where("ligne_vente_id",$commande->id)->sum("montant");
-        $sum_qte         = Vente::where("ligne_vente_id",$commande->id)->sum("quantite");
-        $ht_tva     = $sum_ht * (1 + ($tva / 100));               // ht tva
-        $remise_ht  = $sum_ht * floatval($remise / 100);     // remise ht
-        $remise_ttc = floatval($remise_ht) * (1 + ($tva / 100));  // remise ttc
-        $ttc_net    = $ht_tva - $remise_ttc;                      // net payer
+        $tva        = $commande->taux_tva;
+        $remise     = $commande->remise;
+        $sum_ht     = Vente::where("ligne_vente_id",$commande->id)->sum("montant");
+        $sum_qte    = Vente::where("ligne_vente_id",$commande->id)->sum("quantite");
+        $ht_tva     = $sum_ht * (1 + ($tva / 100));                                   // ht tva
+        $remise_ht  = $sum_ht * floatval($remise / 100);                              // remise ht
+        $remise_ttc = floatval($remise_ht) * (1 + ($tva / 100));                      // remise ttc
+        $ttc_net    = $ht_tva - $remise_ttc;                                          // net payer
         $commande->update([
           "nbrProduits"    => count($request->pro) + $commande->nbrProduits,
           "ttc"         => $ttc_net,

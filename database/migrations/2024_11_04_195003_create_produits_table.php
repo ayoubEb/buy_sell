@@ -19,10 +19,11 @@ return new class extends Migration
             $table->id();
             $table->string('image')->nullable();
             $table->foreignIdFor(Categorie::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignIdFor(Marque::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('reference')->nullable()->unique();
             $table->string('designation')->nullable();
             $table->boolean('statut')->default(0);
+            $table->boolean('check_stock')->default(0);
+            $table->boolean('check_depot')->default(0);
             $table->text('description')->nullable();
             $table->double('prix_achat')->default(0);
             $table->double('prix_vente')->default(0);

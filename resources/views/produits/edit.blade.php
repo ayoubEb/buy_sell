@@ -1,11 +1,17 @@
 @extends('layouts.master')
 @section('content')
-<h6 class="title-header mb-2">
-  <a href="{{ route('produit.index') }}" class="btn btn-brown-outline px-4 py-1">
-    <span class="mdi mdi-arrow-left-thick mdi-24px"></span>
+<div class="d-flex d-md-flex align-items-center justify-content-between">
+  <h6 class="title-header m-0">
+    <a href="{{ route('produit.index') }}" class="btn btn-brown-outline px-4 py-1 waves-effect waves-light me-2">
+      <span class="mdi mdi-arrow-left mdi-18px align-middle"></span>
+    </a>
+    modification de produit : {{ $produit->designation }}
+  </h6>
+  <a href="{{ route('produit.show',$produit) }}" class="btn btn-brown waves-effect waves-light">
+    <span class="mdi mdi-eye-outline align-middle"></span>
+    <span>voir</span>
   </a>
-  modifier le produit : {{ $produit->reference }}
-</h6>
+</div>
 <form action="{{route('produit.update',$produit)}}" method="post" enctype="multipart/form-data">
   @csrf
   @method("PUT")
@@ -83,20 +89,6 @@
               </div>
             </div>
 
-            <div class="col mb-2">
-              <div class="form-group">
-                <label for="" class="form-label">marque</label>
-                <select name="marque" id="" class="form-select @error('marque') is-invalid @enderror">
-                  <option value="">Choisir la marque</option>
-                  @foreach ($marques as $marque)
-                    <option value="{{ $marque->id }}" {{ $produit->marque_id == $marque->id ? "selected": "" }}>{{ $marque->nom }} </option>
-                  @endforeach
-                </select>
-                @error('marque')
-                  <strong class="invalid-feedback"> {{ $message }} </strong>
-                @enderror
-              </div>
-            </div>
             <div class="col">
               <div class="form-group mb-2">
                 <label for="" class="form-label">statut</label>
@@ -123,17 +115,12 @@
           @if($produit->image != null)
           <img src="{{ asset('storage/images/produits/'.$produit->image ?? '') }}" alt="" class="img-fluid" id="fileVoir">
           @else
-            <img src="{{ asset('images/produit_default.png') }}" alt="" class="w-100 " id="fileVoir">
+            <img src="{{ asset('images/default.webp') }}" alt="" class="w-100 " id="fileVoir">
           @endif
         </div>
       </div>
 
-      <div class="d-flex justify-content-between mt-2">
-        @can('produit-list')
-          <a href="{{ route('produit.index') }}" class="btn btn-orange waves-effect waves-light">
-            retour
-          </a>
-        @endcan
+      <div class="d-flex justify-content-center mt-2">
         <button type="submit" class="btn btn-vert waves-effect waves-light">
             <span>mettre à jour</span>
         </button>

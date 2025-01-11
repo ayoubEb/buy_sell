@@ -1,10 +1,20 @@
 @extends('layouts.master')
-@section('title')
-    Modifier le client : {{ $client->raison_sociale ?? '' }}
-@endsection
 @section('content')
 
-
+<div class="d-md-flex justify-content-between align-items-center">
+  <h6 class="title-header">
+    <a href="{{ route('client.index') }}" class="btn btn-brown-outline px-4 py-1 waves-effect waves-light me-2">
+      <span class="mdi mdi-arrow-left mdi-18px align-middle"></span>
+    </a>
+    client : {{ $client->raison_sociale }}
+  </h6>
+  @can('client-modification')
+    <a href="{{ route('client.edit',$client) }}" class="btn btn-darkLight waves-effect waves-light">
+      <span class="mdi mdi-pencil-outline align-middle"></span>
+      <span>modification</span>
+    </a>
+  @endcan
+</div>
 <form action="{{ route('client.update',$client) }}" method="post">
   @csrf
   @method("PUT")

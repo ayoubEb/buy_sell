@@ -1,8 +1,12 @@
 @extends('layouts.master')
-@section('title')
-Ajouter une client
-@endsection
 @section('content')
+<h6 class="title-header mb-2">
+  <a href="{{ route('client.index') }}" class="btn btn-brown-outline px-4 py-1">
+    <span class="mdi mdi-arrow-left-thick mdi-18px"></span>
+  </a>
+  nouveau client
+</h6>
+
 <form action="{{ route('client.store') }}" method="post">
   @csrf
   <div class="row">

@@ -55,7 +55,7 @@ class AchatController extends Controller
           "stock_id"       => $stock->id,
           "quantite"       => $quantite,
           "fonction"       => "achat_reserver",
-          "date_mouvement" => Carbon::today(),
+          "date_suivi" => Carbon::today(),
         ]);
       }
       else
@@ -69,7 +69,7 @@ class AchatController extends Controller
           "stock_id"       => $stock_new->id,
           "quantite"       => $quantite,
           "fonction"       => "achat_reserver",
-          "date_mouvement" => Carbon::today(),
+          "date_suivi" => Carbon::today(),
         ]);
       }
 

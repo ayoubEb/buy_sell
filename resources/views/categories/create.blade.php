@@ -3,9 +3,9 @@
 @section('content')
 <h6 class="title-header mb-2">
   <a href="{{ route('categorie.index') }}" class="btn btn-brown-outline px-4 py-1">
-    <span class="mdi mdi-arrow-left-thick mdi-24px"></span>
+    <span class="mdi mdi-arrow-left-thick mdi-18px"></span>
   </a>
-  nouveau categorie : {{ $categorie->nom }}
+  nouveau catégorie
 </h6>
   <div class="card">
     <div class="card-body p-2">
@@ -44,16 +44,12 @@
               <textarea name="description" rows="10" class="form-control">{{ old("description")}}</textarea>
             </div>
 
-              <div class="d-flex justify-content-between">
-                <a href="{{ route('categorie.index') }}" class="btn btn-primary waves-effect waves-light">
-                  retour
-                </a>
-
-                <button type="submit" class="btn btn-success waves-effect waves-light">
-                    <span>Enregistrer</span>
-                </button>
-              </div>
-            </form>
+            <div class="d-flex justify-content-center">
+              <button type="submit" class="btn btn-vert waves-effect waves-light">
+                  <span>Enregistrer</span>
+              </button>
+            </div>
+          </form>
           </div>
         </div>
       </div>

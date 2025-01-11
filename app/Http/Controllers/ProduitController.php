@@ -2,191 +2,204 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MarqueProduit;
+use App\Http\Requests\ProduitRequest;
+use App\Models\Categorie;
 use App\Models\Produit;
+use App\Models\Stock;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
+use Spatie\Activitylog\Models\Activity;
 
 class ProduitController extends Controller
 {
-    function __construct()
-    {
-      $this->middleware('permission:produit-list|produit-nouveau|produit-modification|produit-suppression', ['only' => ['index','show']]);
+  function __construct()
+  {
+    $this->middleware('permission:produit-list', ['only' => 'index']);
 
-      $this->middleware('permission:produit-nouveau', ['only' => ['create','store']]);
+    $this->middleware('permission:produit-nouveau', ['only' => ['create','store']]);
 
-      $this->middleware('permission:produit-modification', ['only' => ['edit','update']]);
+    $this->middleware('permission:produit-modification', ['only' => ['edit','update']]);
 
-      $this->middleware('permission:produit-suppression', ['only' => ['destroy']]);
+    $this->middleware('permission:produit-suppression', ['only' => 'destroy']);
 
-      $this->middleware('permission:produit-display', ['only' => ['show']]);
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $produits = Produit::all();
-        $all      = [ 'produits'=>$produits ];
-        return view('produits.index',$all);
+    $this->middleware('permission:produit-display', ['only' => 'show']);
+  }
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+  */
+  public function index()
+  {
+    $produits = Produit::select("id","reference","designation","prix_achat","prix_vente","prix_revient","quantite","statut","created_at")->get();
+    $all      = [ 'produits'=>$produits ];
+    return view('produits.index',$all);
+  }
 
-    }
+  /**
+   * Show the form for creating a new resource.
+   *
+   * @return \Illuminate\Http\Response
+  */
+  public function create()
+  {
+    $categories = Categorie::select('id','nom')->get();
+    $all        = [ "categories" => $categories ];
+    return view("produits.create",$all);
+  }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $categories = DB::table("categories")->select('id','nom')->whereNull("deleted_at")->get();
-        $marques    = DB::table("marques")->select("id","nom")->get();
-        $all = [
-            "categories" => $categories,
-            "marques"    => $marques,
-        ];
-        return view("produits.create",$all);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            "reference"    => ["required","unique:produits,reference"],
-            "marque"    => ["required","exists:marques,id"],
-            "designation"  => ["required"],
-            "categorie"    => ["required"],
-            "prix_achat"   => ["required","min:0","numeric"],
-            "prix_revient"   => ["required","min:0","numeric"],
-            "prix_vente"   => ["required","min:0","numeric"],
-
-          ]);
-
-          if($request->hasFile("img")){
-            $destination_path = 'public/images/produits/';
-            $image_produit    = $request->file("img");
-            $filename         = $image_produit->getClientOriginalName();
-            $resu             = $filename;
-            $request->file("img")->storeAs($destination_path,$filename);
-          }
-
-         $produit = Produit::create([
-            "image"        => $resu ?? "",
-            "reference"    => $request->reference,
-            "categorie_id"    => $request->categorie,
-            "marque_id"    => $request->marque,
-            "designation"  => Str::upper($request->designation),
-            "description"  => $request->description,
-            "prix_achat"   => $request->prix_achat,
-            "prix_revient" => $request->prix_revient,
-            "prix_vente" => $request->prix_vente,
-            "quantite"     => 0,
-          ]);
-          Session()->flash("success","Lca modification du produit effectuée");
-          return redirect()->route('produit.index');
+  /**
+    * Store a newly created resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+  */
+  public function store(ProduitRequest $request)
+  {
+    $request->validated();
+    if($request->hasFile("img")){
+      $destination_path = 'public/images/produits/';
+      $image_produit    = $request->file("img");
+      $filename         = $image_produit->getClientOriginalName();
+      $resu             = $filename;
+      $request->file("img")->storeAs($destination_path,$filename);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Produit  $produit
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Produit $produit)
-    {
-      $all = [ "produit" => $produit ];
-      return view("produits.show",$all);
+    $produit = Produit::create([
+      "image"        => $resu ?? "",
+      "reference"    => $request->reference,
+      "categorie_id" => $request->categorie,
+      "designation"  => Str::upper($request->designation),
+      "description"  => $request->description,
+      "prix_achat"   => $request->prix_achat,
+      "prix_revient" => $request->prix_revient,
+      "prix_vente"   => $request->prix_vente,
+      "check_stock"=>1,
+    ]);
+    $count_stock = Stock::count();
+    Stock::create([
+      "produit_id"=>$produit->id,
+      "num"=> "STO-00" . ($count_stock + 1),
+      "date_stock"=>Carbon::today(),
+    ]);
+
+    Session()->flash("success","L'enregistrement du produit effectuée");
+    return redirect()->route('produit.index');
+  }
+
+  /**
+   * Display the specified resource.
+   *
+   * @param  \App\Models\Produit  $produit
+   * @return \Illuminate\Http\Response
+  */
+  public function show(Produit $produit)
+  {
+    $stock         = $produit->stock;
+    $suivi_actions = $produit->activities()->get();
+    foreach($suivi_actions as $suivi_action){
+      $check_user = User::where('id',$suivi_action->causer_id)->exists();
+      if($check_user == true)
+      {
+        $suivi_action->user = User::where("id",$suivi_action->causer_id)->first()->name;
+      }
+      else
+      {
+        $suivi_action->user = null;
+      }
+    }
+    $all = [
+      "produit"       => $produit,
+      "stock"         => $stock,
+      "suivi_actions" => $suivi_actions
+    ];
+    return view("produits.show",$all);
+  }
+
+  /**
+   * Show the form for editing the specified resource.
+   *
+   * @param  \App\Models\Produit  $produit
+   * @return \Illuminate\Http\Response
+  */
+  public function edit(Produit $produit)
+  {
+    $categories = DB::table("categories")->whereNull("deleted_at")->get();
+    $all = [
+        "produit"    => $produit,
+        "categories" => $categories,
+    ];
+    return view("produits.edit",$all);
+  }
+
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  \App\Models\Produit  $produit
+   * @return \Illuminate\Http\Response
+  */
+  public function update(ProduitRequest $request, Produit $produit)
+  {
+    $request->validated();
+    if (File::exists(storage_path().'/app/public/images/produits/'.$produit->image)) {
+      File::delete(storage_path().'/app/public/images/produits/'.$produit->image);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Produit  $produit
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Produit $produit)
+    if($request->hasFile("img"))
     {
-        $categories       = DB::table("categories")->whereNull("deleted_at")->get();
-        $marques    = DB::table("marques")->select("id","nom")->get();
-
-        $all = [
-            "produit"          => $produit,
-            "categories"       => $categories,
-            "marques"       => $marques,
-        ];
-        return view("produits.edit",$all);
+      $destination_path_produit = 'public/images/produits';
+      $image_produit            = $request->file("img");
+      $img_produit              = $image_produit->getClientOriginalName();
+      $request->file("img")->storeAs($destination_path_produit,$img_produit);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Produit  $produit
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Produit $produit)
-    {
-        $request->validate([
-            "reference"   => ["required",Rule::unique('produits', 'reference')->ignore($produit->id),],
-            "designation" => ["required"],
-            "categorie" => ["required",'exists:categories,id'],
-            "prix_achat"   => ["required","min:0","numeric"],
-            "prix_revient"   => ["required","min:0","numeric"],
-            "prix_vente"   => ["required","min:0","numeric"],
-          ]);
 
-          if (File::exists(storage_path().'/app/public/images/produits/'.$produit->image)) {
-            File::delete(storage_path().'/app/public/images/produits/'.$produit->image);
-          }
+    $produit->update([
+      "image"        => $img_produit ?? $produit->image,
+      "reference"    => $request->reference,
+      "designation"  => Str::upper($request->designation),
+      "description"  => $request->description,
+      "categorie_id" => $request->categorie,
+      "prix_revient" => $request->prix_revient,
+      "prix_achat"   => $request->prix_achat,
+      "prix_vente"   => $request->prix_vente,
+      "statut"       => $request->statut == 1 ? 1 : 0,
+    ]);
 
-          if($request->hasFile("img"))
-          {
-            $destination_path_produit = 'public/images/produits';
-            $image_produit            = $request->file("img");
-            $img_produit              = $image_produit->getClientOriginalName();
-            $request->file("img")->storeAs($destination_path_produit,$img_produit);
-          }
+    Session()->flash("success","La modification du produit effectuée");
+    return redirect()->route('produit.index');
+  }
 
-
-            $produit->update([
-              "image"        => $img_produit ?? $produit->image,
-              "reference"    => $request->reference,
-              "designation"  => Str::upper($request->designation),
-              "description"  => $request->description,
-              "categorie_id"  => $request->categorie,
-              "marque_id"  => $request->marque,
-              "prix_revient" => $request->prix_revient,
-              "prix_achat" => $request->prix_achat,
-              "prix_vente" => $request->prix_vente,
-            ]);
-
-        Session()->flash("update","La modification du produit effectuée");
-        return redirect()->route('produit.index');
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @param  \App\Models\Produit  $produit
+   * @return \Illuminate\Http\Response
+  */
+  public function destroy(Produit $produit)
+  {
+    Stock::where("produt_id",$produit->id)->delete();
+    $produit->delete();
+    if (File::exists(storage_path().'/app/public/images/produits/'.$produit->image)) {
+        File::delete(storage_path().'/app/public/images/produits/'.$produit->image);
     }
+    Session()->flash("success","La suppression du produit effectuée");
+    return back();
+  }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Produit  $produit
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Produit $produit)
-    {
-        $produit->delete();
-        if (File::exists(storage_path().'/app/public/images/produits/'.$produit->image)) {
-            File::delete(storage_path().'/app/public/images/produits/'.$produit->image);
-        }
-        Session()->flash("update","La suppression du produit effectuée");
-        return back();
-    }
+  public function getProduit(Request $request){
+    $produit = Produit::select("id","reference","prix_vente","designation")->where("id",$request->id)->first();
+    $stock   = Stock::where("produit_id",$produit->id)->first();
+    $all = [
+      "produit" => $produit,
+      "stock"   => $stock,
+    ];
+    return $all;
+  }
 }

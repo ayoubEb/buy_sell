@@ -17,7 +17,7 @@ class TauxTva extends Model
   {
       return LogOptions::defaults()
           ->uselogName('taux_tva')
-          ->logAll()
+          ->logOnly(["nom","valeur","description"])
           ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}");
   }
 }

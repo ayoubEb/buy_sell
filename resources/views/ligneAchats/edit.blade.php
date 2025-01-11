@@ -1,41 +1,42 @@
 @extends('layouts.master')
-@section('title')
-    Modifier la ligne d'achat : {{ $ligneAchat->num_achat ?? '' }}
-@endsection
 @section('content')
-<div class="row">
-  <div class="col-12">
-    <div class="page-title-box d-flex align-items-center justify-content-between">
-      <h4 class="page-title mb-0 font-size-18">modification d'achats : {{ $ligneAchat->num_achat }}</h4>
-    </div>
+<div class="d-md-flex justify-content-between align-items-center">
+  <h6 class="title-header">
+    <a href="{{ route('ligneAchat.index') }}" class="btn btn-brown-outline px-4 py-1 waves-effect waves-light me-2">
+      <span class="mdi mdi-arrow-left mdi-18px align-middle"></span>
+    </a>
+    Modification achat : {{ $ligneAchat->num_achat }}
+  </h6>
+  <div class="">
+    @if ($count_pro != 0)
+      @can('achat-nouveau')
+        <a href="{{ route('achat.new',$ligneAchat) }}" class="btn btn-brown waves-effect waves-light ms-2">
+          <i class="mdi mdi-plus-thick align-middle"></i>
+        </a>
+      @endcan
+    @endif
+    @can('ligneAchat-display')
+      <a href="{{ route('ligneAchat.show',$ligneAchat) }}" class="btn btn-darkLight waves-effect waves-light">
+        détails
+      </a>
+    @endcan
   </div>
 </div>
-@can('ligneAchat-list')
-  <a href="{{ route('ligneAchat.index') }}" class="btn btn-brown waves-effect waves-light mb-2">
-    liste
-  </a>
-@endcan
-@can('ligneAchat-display')
-  <a href="{{ route('ligneAchat.show',$ligneAchat) }}" class="btn btn-brown waves-effect waves-light mb-2">
-    détails
-  </a>
-@endcan
 @include('layouts.session')
   <div class="row">
     <div class="col-lg-7">
-      <h6 class="title mb-3">
-        <span>
-          basic information
-        </span>
-      </h6>
       <div class="card">
         <div class="card-body p-2">
+          <h6 class="title mb-3">
+            <span>
+              basic information
+            </span>
+          </h6>
           <form action="{{ route('ligneAchat.update',$ligneAchat) }}" method="POST">
             @csrf
             @method('PUT')
             <input type="hidden" id="ht" value="{{ $ligneAchat->ht }}">
             <div class="row row-cols-2">
-
               <div class="col mb-2">
                 <div class="form-group">
                   <label for="" class="form-label">Fournisseur</label>
@@ -68,13 +69,13 @@
               <div class="col mb-2">
                 <div class="form-group mb-2">
                   <label for="" class="form-label">Status</label>
-                  <select name="status" id="" class="form-select form-select @error('status') is-invalid @enderror">
-                    <option value="">Choisir le status</option>
-                    <option value="en cours" {{ $ligneAchat->status == "en cours" ? "selected":"" }}>En cours</option>
-                    <option value="validé" {{ $ligneAchat->status == "validé" ? "selected":"" }}>Validé</option>
-                    <option value="annulé" {{ $ligneAchat->status == "annulé" ? "selected":"" }}>Annulé</option>
+                  <select name="statut" id="" class="form-select form-select @error('statut') is-invalid @enderror">
+                    <option value="">Choisir le statut</option>
+                    <option value="en cours" {{ $ligneAchat->statut == "en cours" ? "selected":"" }}>En cours</option>
+                    <option value="validé" {{ $ligneAchat->statut == "validé" ? "selected":"" }}>Validé</option>
+                    <option value="annulé" {{ $ligneAchat->statut == "annulé" ? "selected":"" }}>Annulé</option>
                   </select>
-                  @error('status')
+                  @error('statut')
                     <strong class="invalid-feedback">{{ $message }}</strong>
                   @enderror
                 </div>
@@ -98,24 +99,25 @@
                 </div>
               </div>
 
-
-            <div class="col mb-2">
-              <div class="form-group">
-                <label for="" class="form-label">entreprise</label>
-                <select name="entreprise" class="form-select @error('tva') is-invalid @enderror">
-                  <option value="">Choisir l'entreprise</option>
-                  @forelse ($entreprises as $entreprise)
-                    <option value="{{ $entreprise->id }}" {{ $ligneAchat->entreprise_id == $entreprise->id ? "selected" : "" }}> {{ $entreprise->raison_sociale }}</option>
-                  @empty
-                  @endforelse
-                </select>
-                @error('entreprise')
-                  <strong class="invalid-feedback">
-                    {{ $message }}
-                  </strong>
-                @enderror
-              </div>
-            </div>
+              @if (count($entreprises) > 1)
+                <div class="col mb-2">
+                  <div class="form-group">
+                    <label for="" class="form-label">entreprise</label>
+                    <select name="entreprise" class="form-select @error('entreprise') is-invalid @enderror">
+                      <option value="">Choisir l'entreprise</option>
+                      @forelse ($entreprises as $entreprise)
+                        <option value="{{ $entreprise->id }}" {{ $ligneAchat->entreprise_id == $entreprise->id ? "selected" : "" }}> {{ $entreprise->raison_sociale }}</option>
+                      @empty
+                      @endforelse
+                    </select>
+                    @error('entreprise')
+                      <strong class="invalid-feedback">
+                        {{ $message }}
+                      </strong>
+                    @enderror
+                  </div>
+                </div>
+              @endif
 
             </div>
 
@@ -130,13 +132,13 @@
     </div>
 
     <div class="col">
-      <h6 class="title mb-3">
-        <span>
-          paiements
-        </span>
-      </h6>
       <div class="card">
         <div class="card-body p-2">
+          <h6 class="title mb-3">
+            <span>
+              paiements
+            </span>
+          </h6>
           <div class="table-responsive">
             <table class="table table-bordered m-0 info">
               <tbody id="info">
@@ -180,18 +182,6 @@
     </div>
   </div>
 
-  <h6 class="title mb-2">
-    <span>
-      les produits
-    </span>
-    @if ($count_pro != 0)
-      @can('achat-nouveau')
-        <a href="{{ route('achat.new',$ligneAchat) }}" class="btn btn-brown waves-effect waves-light ms-2">
-          <i class="mdi mdi-plus-thick align-middle"></i>
-        </a>
-      @endcan
-    @endif
-  </h6>
   <div class="card">
     <div class="card-body p-2">
       <div class="table-resposnive">
@@ -221,7 +211,7 @@
               @canany(['achat-modification', 'achat-display', 'achat-suppression'])
                 <td class="align-middle">
                   @can('achat-modification')
-                    <a href="{{ route('achat.edit',$achat) }}" class="btn btn-primary waves-effect waves-light py-1 px-2 rounded-circle">
+                    <a href="{{ route('achat.edit',$achat) }}" class="btn btn-primary waves-effect waves-light p-icon">
                       <span class="mdi mdi-pencil-outline align-middle"></span>
                     </a>
                   @endcan
@@ -229,8 +219,8 @@
 
                   @endcan
                   @can('achat-suppression')
-                    <button type="button" class="btn btn-danger waves-effect waves-light py-1 px-2 rounded-circle" data-bs-toggle="modal" data-bs-target="#delete{{ $achat->id}}">
-                      <span class="mdi mdi-trash-can"></span>
+                    <button type="button" class="btn btn-danger waves-effect waves-light p-icon" data-bs-toggle="modal" data-bs-target="#delete{{ $achat->id}}">
+                      <span class="mdi mdi-trash-can-outline align-middle"></span>
                     </button>
                     <div class="modal fade" id="delete{{ $achat->id}}" tabindex="-1" aria-labelledby="varyingModalLabel" aria-hidden="true">
                       <div class="modal-dialog modal-md modal-dialog-centered">

@@ -6,6 +6,8 @@ use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\CategorieCaisseController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ComptoirController;
+use App\Http\Controllers\DepotController;
 use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\FournisseurController;
 use App\Http\Controllers\HistoriqueController;
@@ -19,10 +21,12 @@ use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\RapportAchatController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\StockDepotController;
 use App\Http\Controllers\StockSuiviController;
 use App\Http\Controllers\TauxTvaController;
 use App\Http\Controllers\UniteMesureController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VenteComptoirController;
 use App\Http\Controllers\VenteController;
 use App\Http\Controllers\VenteLivraisonController;
 use App\Http\Controllers\VentePaiementController;
@@ -54,20 +58,33 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('client', ClientController::class);
     Route::resource('entreprise', EntrepriseController::class);
     Route::resource("/tauxTva",TauxTvaController::class);
-    Route::resource("/categorieCaisse",CategorieCaisseController::class);
-    Route::resource("/caisse",CaisseController::class);
     Route::resource("/achat",AchatController::class);
     Route::resource("/achatPaiement",AchatPaiementController::class);
     Route::resource("/ventePaiement",VentePaiementController::class);
-    Route::resource('marque', MarqueController::class);
-    Route::resource('venteLivraison', VenteLivraisonController::class)->except("create");
-    Route::resource('livraison', LivraisonController::class);
-    Route::controller(LivraisonController::class)->group(function(){
-      Route::get('/getMontant','livraisonPrice')->name("livraisonPrice");
+    Route::resource('comptoir', ComptoirController::class);
+    Route::resource('venteComptoir', VenteComptoirController::class);
+    Route::resource("depot",DepotController::class);
+    Route::controller(DepotController::class)->group(function(){
+      Route::put('depot/{id}/active','active')->name("depot.active");
+      Route::put('depot/{id}/inactive','inactive')->name("depot.inactive");
     });
-    Route::controller(VenteLivraisonController::class)->group(function(){
-      Route::get('vente/{id}/addLivraison','add')->name("venteLivraison.add");
+
+    Route::controller(StockDepotController::class)->group(function(){
+      Route::get('stockDepots','index')->name("stockDepot.index");
+      Route::get('stockDepot/{stockDepot}/edit','edit')->name("stockDepot.edit");
+      Route::put('stockDepot/{stockDepot}','update')->name("stockDepot.update");
+      Route::post('stockDepots','store')->name("stockDepot.store");
+      Route::get('stock/{id}/depot','depots')->name("stockDepot.add");
+      Route::get('stockDepot/{stockDepot}','show')->name("stockDepot.show");
+      Route::put('stockDepot/{id}/inactive','inactive')->name("stockDepot.inactive");
+      Route::put('stockDepot/{id}/active','active')->name("stockDepot.active");
     });
+    Route::controller(ProduitController::class)->group(function(){
+      Route::get('/getProduit','getProduit')->name("produit.info");
+    });
+    // Route::controller(VenteLivraisonController::class)->group(function(){
+    //   Route::get('vente/{id}/addLivraison','add')->name("venteLivraison.add");
+    // });
     Route::get('/ligneAchat/{id}/addProduits',[AchatController::class,'add'])->name("achat.new");
     Route::controller(AchatPaiementController::class)->group(function(){
       Route::get('/achatPaiement/{achatPaiement}/minInfo','minInfo')->name("achatPaiement.minInfo");
@@ -88,7 +105,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource("ligneVente",LigneVenteController::class);
     Route::controller(LigneVenteController::class)->group(function () {
       Route::put('vente-valider/{ligneVente}','valider')->name("ligneVente.valider");
-      Route::get('ligneVente/{ligneVente}','devis')->name("ligneVente.devis");
+      Route::get('ligneVente/{ligneVente}/devis','devis')->name("ligneVente.devis");
       Route::get('ligneVente/{ligneVente}/facture','facture')->name("ligneVente.facture");
       Route::get('ligneVente/{ligneVente}/facture-preforma','facture_preforma')->name("ligneVente.facturePreforma");
     });

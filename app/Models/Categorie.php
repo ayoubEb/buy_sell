@@ -18,7 +18,7 @@ class Categorie extends Model
     {
         return LogOptions::defaults()
             ->uselogName('categorie')
-            ->logAll()
+            ->logOnly(["nom","description"])
             ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}");
     }
 

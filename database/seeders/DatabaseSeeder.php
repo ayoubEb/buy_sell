@@ -28,5 +28,9 @@ class DatabaseSeeder extends Seeder
         $this->call(TauxSeeder::class);
         $this->call(ClientSeeder::class);
         $this->call(BanqueSeeder::class);
+        $this->call(EntrepriseSeeder::class);
+        $this->call(DepotSeeder::class);
+        $this->call(StockSeeder::class);
+        $this->call(ActivityInitialSeeder::class);
     }
 }

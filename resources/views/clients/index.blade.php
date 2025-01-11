@@ -1,16 +1,18 @@
 @extends('layouts.master')
-@section('title')
-    clients
-@endsection
 @section('content')
-
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h4 class="title-header">
+    liste des clients
+  </h4>
+  @can('client-nouveau')
+    <a href="{{ route('client.create') }}" class="btn btn-brown px-4 waves-effect waves-light">
+      <span class="mdi mdi-plus-thick"></span>
+    </a>
+  @endcan
+</div>
 <div class="card">
   <div class="card-body p-2">
-    @can('client-nouveau')
-    <a href="{{ route('client.create') }}" class="btn btn-lien waves-effect waves-light mb-2">
-      <span>Nouveau</span>
-    </a>
-    @endcan
+    @include('layouts.session')
     <div class="table-responsive">
       <table class="table table-bordered m-0 table-sm" id="dt">
         <thead class="table-success">
@@ -93,18 +95,18 @@
               </td>
               @can('client-modification')
               <td class="align-middle">
-                    <a href="{{ route('client.edit',$client->id) }}" class="btn btn-primary waves-effect waves-light p-0 px-2">
+                    <a href="{{ route('client.edit',$client->id) }}" class="btn btn-primary waves-effect waves-light p-icon">
                       <span class="mdi mdi-pencil-outline align-middle"></span>
                     </a>
                   @endcan
                   @can('client-display')
-                    <a href="{{ route('client.show',$client->id) }}" class="btn btn-warning waves-effect waves-light p-0 px-2">
+                    <a href="{{ route('client.show',$client->id) }}" class="btn btn-warning waves-effect waves-light p-icon">
                       <span class="mdi mdi-eye-outline align-middle"></span>
                     </a>
                   @endcan
                   @can('client-suppression')
-                    <button  class="btn btn-danger waves-effect waves-light p-0 px-2" data-bs-toggle="modal" data-bs-target="#delete{{$client->id}}">
-                      <span class="mdi mdi-trash-can"></span>
+                    <button  class="btn btn-danger waves-effect waves-light p-icon" data-bs-toggle="modal" data-bs-target="#delete{{$client->id}}">
+                      <span class="mdi mdi-trash-can align-middle"></span>
                     </button>
                     <div class="modal fade" id="delete{{ $client->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                       <div class="modal-dialog modal-dialog-centered" role="document">

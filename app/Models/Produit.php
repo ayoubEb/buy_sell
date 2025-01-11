@@ -21,7 +21,7 @@ class Produit extends Model
     {
         return LogOptions::defaults()
             ->uselogName('produit')
-            ->logAll()
+            ->logAll(["categorie_id","marque_id","reference","designation","statut","description","prix_achat","prix_vente","prix_revient","quantite"])
             ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}");
     }
     /**
@@ -41,15 +41,7 @@ class Produit extends Model
      */
     public function stock(): HasOne
     {
-        return $this->hasOne(Stock::class, 'produit_id', 'id');
+        return $this->hasOne(Stock::class, 'produit_id', 'id')->withTrashed();
     }
-    /**
-     * Get the marque that owns the Produit
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function marque(): BelongsTo
-    {
-        return $this->belongsTo(Marque::class, 'marque_id', 'id');
-    }
+
 }

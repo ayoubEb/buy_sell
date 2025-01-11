@@ -5,7 +5,7 @@
 @section('content')
   <h6 class="title-header mb-2">
     <a href="{{ route('produit.index') }}" class="btn btn-brown-outline px-4 py-1">
-      <span class="mdi mdi-arrow-left-thick mdi-24px"></span>
+      <span class="mdi mdi-arrow-left-thick mdi-18px"></span>
     </a>
     nouveau produit
   </h6>
@@ -50,9 +50,9 @@
 
               <div class="col mb-2">
                 <div class="form-group">
-                  <label for="" class="form-label">Prix Revient <span class="text-danger"> * </span></label>
-                  <input type="number" name="prix_revient" id="" class="form-control  @error('prix_revient') is-invalid @enderror" min="0" step="any" value="{{ old('prix_revient') }}">
-                  @error('prix_revient')
+                  <label for="" class="form-label">Prix de vente <span class="text-danger"> * </span></label>
+                  <input type="number" name="prix_vente" id="" class="form-control  @error('prix_vente') is-invalid @enderror" min="0" step="any" value="{{ old('prix_vente') }}">
+                  @error('prix_vente')
                     <strong class="invalid-feedback">
                       {{ $message }} ex : 0/0.00
                     </strong>
@@ -62,9 +62,9 @@
 
               <div class="col mb-2">
                 <div class="form-group">
-                  <label for="" class="form-label">Prix Vente <span class="text-danger"> * </span></label>
-                  <input type="number" name="prix_vente" id="" class="form-control  @error('prix_vente') is-invalid @enderror" min="0" step="any" value="{{ old('prix_vente') }}">
-                  @error('prix_vente')
+                  <label for="" class="form-label">Prix Revient <span class="text-danger"> * </span></label>
+                  <input type="number" name="prix_revient" id="" class="form-control  @error('prix_revient') is-invalid @enderror" min="0" step="any" value="{{ old('prix_revient') }}">
+                  @error('prix_revient')
                     <strong class="invalid-feedback">
                       {{ $message }} ex : 0/0.00
                     </strong>
@@ -87,29 +87,13 @@
                 </div>
               </div>
 
-
-              <div class="col mb-2">
-                <div class="form-group">
-                  <label for="" class="form-label">marque</label>
-                  <select name="marque" id="" class="form-select @error('marque') is-invalid @enderror">
-                    <option value="">Choisir la marque</option>
-                    @foreach ($marques as $marque)
-                      <option value="{{ $marque->id }}" {{ old('marque') == $marque->id ? "selected": "" }}>{{ $marque->nom }} </option>
-                    @endforeach
-                  </select>
-                  @error('marque')
-                    <strong class="invalid-feedback"> {{ $message }} </strong>
-                  @enderror
-                </div>
-              </div>
-
               <div class="col">
                 <div class="form-group mb-2">
                   <label for="" class="form-label">statut</label>
                   <select name="statut" id="" class="form-select">
                     <option value="">-- choisir le statut--</option>
-                    <option value="1">Activé</option>
-                    <option value="0">Desactuvé</option>
+                    <option value="1" {{ old('statut') == 1 ? 'selected' : '' }}>Activé</option>
+                    <option value="0" {{ old('statut') == 0 ? 'selected' : '' }}>Desactuvé</option>
                   </select>
                 </div>
               </div>

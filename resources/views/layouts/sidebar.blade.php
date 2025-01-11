@@ -10,8 +10,8 @@
               <!-- Left Menu Start -->
               <ul class="metismenu list-unstyled" id="side-menu">
 
-                      <li>
-                        <a href="{{ route('home') }}" class=" waves-effect">
+                      <li class="">
+                        <a href="{{ route('home') }}" class="waves-effect item">
                             <i class="dripicons-device-desktop"></i>
                             <span>tableau de bord</span>
                         </a>
@@ -19,19 +19,45 @@
 
                       @canany( ['produit-list', 'categorie-list',"stock-list"])
                         <li>
-                          <a href="javascript: void(0);" class="has-arrow waves-effect">
+                          <a href="javascript: void(0);" class="has-arrow waves-effect item">
                             <i class="dripicons-device-desktop"></i>
                             <span>catalogue</span>
                           </a>
                           <ul class="sub-menu" aria-expanded="true">
-                            @can('produit-list')
-                              <li><a href="{{ route('produit.index') }}">produits</a></li>
-                            @endcan
                             @can('categorie-list')
-                              <li><a href="{{ route('categorie.index') }}">catégories</a></li>
+                            <li class="item-link {{ Route::currentRouteName() === 'categorie.edit' ||
+                            Route::currentRouteName() === 'categorie.show' ||
+                            Route::currentRouteName() === 'categorie.create' ||
+                            Route::currentRouteName() === 'categorie.index'
+                            ? 'mm-active':'' }}">
+                              <a href="{{ route('categorie.index') }}" class="item-link">catégories</a>
+                            </li>
+                            @endcan
+                            @can('produit-list')
+                            <li class="item-link {{ Route::currentRouteName() === 'produit.edit' ||
+                              Route::currentRouteName() === 'produit.show' ||
+                              Route::currentRouteName() === 'produit.create' ||
+                              Route::currentRouteName() === 'produit.index'
+                              ? 'mm-active':'' }}">
+                                <a href="{{ route('produit.index') }}" class="item-link">produits</a>
+                            </li>
                             @endcan
                             @can('stock-list')
-                              <li><a href="{{ route('stock.index') }}">stock</a></li>
+                              <li class="{{ Route::currentRouteName() === 'stock.edit' ||
+                              Route::currentRouteName() === 'stock.show' ||
+                              Route::currentRouteName() === 'stock.create' ||
+                              Route::currentRouteName() === 'stock.index'
+                              ? 'mm-active':'' }}">
+                                <a href="{{ route('stock.index') }}" class="item-link">stock</a>
+                              </li>
+                            @endcan
+                            @can('stock-list')
+                              <li class="{{ Route::currentRouteName() === 'stockDepot.edit' ||
+                              Route::currentRouteName() === 'stockDepot.show' ||
+                              Route::currentRouteName() === 'stockDepot.index'
+                              ? 'mm-active':'' }}">
+                                <a href="{{ route('stockDepot.index') }}" class="item-link">depot</a>
+                              </li>
                             @endcan
                           </ul>
                         </li>
@@ -41,16 +67,26 @@
 
                         @canany( ['client-list', 'fournisseur-list'])
                           <li>
-                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect item">
                                   <i class="dripicons-device-desktop"></i>
                                   <span>crm</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="true">
                                 @can('fournisseur-list')
-                                  <li><a href="{{ route('fournisseur.index') }}">fournisseurs</a></li>
+                                  <li  class="{{ Route::currentRouteName() === 'fournisseur.index' ||
+                                  Route::currentRouteName() === 'fournisseur.show' ||
+                                  Route::currentRouteName() === 'fournisseur.edit'
+                                  ? 'mm-active':'' }}">
+                                    <a href="{{ route('fournisseur.index') }}" class="item-link">fournisseurs</a>
+                                  </li>
                                 @endcan
                                 @can('client-list')
-                                  <li><a href="{{ route('client.index') }}">clients</a></li>
+                                  <li  class="{{ Route::currentRouteName() === 'client.index' ||
+                                  Route::currentRouteName() === 'client.show' ||
+                                  Route::currentRouteName() === 'client.edit'
+                                  ? 'mm-active':'' }}">
+                                    <a href="{{ route('client.index') }}" class="item-link">clients</a>
+                                  </li>
                                 @endcan
                             </ul>
                           </li>
@@ -64,10 +100,9 @@
                               </a>
                             </li>
                         @endcan
-
                         @can('ligneVente-list')
                         <li>
-                              <a href="{{ route('ligneVente.index') }}" class=" waves-effect">
+                              <a href="{{ route('ligneAchat.index') }}" class=" waves-effect">
                                 <i class="dripicons-device-desktop"></i>
                                 <span>ventes</span>
                               </a>
@@ -108,23 +143,6 @@
                         </li>
                         @endcanany
 
-                        @can('categorieDepense-list')
-                          <li>
-                            <a href="{{ route('categorieDepense.index') }}" class=" waves-effect">
-                                <i class="dripicons-device-desktop"></i>
-                                <span>catégorie dépense</span>
-                            </a>
-                          </li>
-                        @endcan
-
-                        @can('depense-list')
-                          <li>
-                            <a href="{{ route('depense.index') }}" class=" waves-effect">
-                                <i class="dripicons-device-desktop"></i>
-                                <span>dépense</span>
-                            </a>
-                          </li>
-                        @endcan
 
                             <li>
                               <a href="{{ route('rapportAchat.index') }}" class=" waves-effect">
@@ -133,38 +151,46 @@
                               </a>
                             </li>
 
-                            @canany( ['ventePaiement-list', 'achatPaiement-list'])
-                              <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                      <i class="dripicons-device-desktop"></i>
-                                      <span>caisses</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="true">
-                                    @can('ventePaiement-list')
-                                      <li><a href="{{ route('categorieCaisse.index') }}">catégorie caisse</a></li>
-                                    @endcan
-                                    @can('achatPaiement-list')
-                                      <li><a href="{{ route('caisse.index') }}">caisse</a></li>
-                                    @endcan
-                                </ul>
-                              </li>
-                            @endcanany
 
                             @canany( ['ventePaiement-list', 'achatPaiement-list'])
                               <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <a href="javascript: void(0);" class="has-arrow waves-effect item">
                                       <i class="dripicons-device-desktop"></i>
                                       <span>paramètres</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="true">
-                                    @can('ventePaiement-list')
-                                      <li><a href="{{ route('tauxTva.index') }}">tva</a></li>
+                                    @can('tauxTva-list')
+                                      <li class="{{ Route::currentRouteName() === 'tauxTva.edit' ||
+                                        Route::currentRouteName() === 'tauxTva.show' ||
+                                        Route::currentRouteName() === 'tauxTva.create' ||
+                                        Route::currentRouteName() === 'tauxTva.index' ? 'mm-active':''
+                                        }}">
+                                        <a href="{{ route('tauxTva.index') }}" class="item-link">
+                                          tva
+                                        </a>
+                                      </li>
                                     @endcan
-                                    @can('achatPaiement-list')
-                                      <li><a href="{{ route('marque.index') }}">marques</a></li>
+                                    @can('comptoir-list')
+                                      <li class="{{ Route::currentRouteName() === 'comptoir.edit' ||
+                                        Route::currentRouteName() === 'comptoir.show' ||
+                                        Route::currentRouteName() === 'comptoir.create' ||
+                                        Route::currentRouteName() === 'comptoir.index' ? 'mm-active':''
+                                        }}">
+                                        <a href="{{ route('comptoir.index') }}" class="item-link">
+                                          comptoir
+                                        </a>
+                                      </li>
                                     @endcan
-                                    @can('achatPaiement-list')
-                                      <li><a href="{{ route('livraison.index') }}">livraisons</a></li>
+                                    @can('depot-list')
+                                      <li class="{{ Route::currentRouteName() === 'depot.edit' ||
+                                        Route::currentRouteName() === 'depot.show' ||
+                                        Route::currentRouteName() === 'depot.create' ||
+                                        Route::currentRouteName() === 'depot.index' ? 'mm-active':''
+                                        }}">
+                                        <a href="{{ route('depot.index') }}" class="item-link">
+                                          depôts
+                                        </a>
+                                      </li>
                                     @endcan
                                 </ul>
                               </li>
