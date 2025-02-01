@@ -5,11 +5,52 @@
   <h4 class="title-header">
     liste des depôts
   </h4>
-  @can('depot-nouveau')
-  <a href="{{ route('depot.create') }}" class="btn btn-brown px-4 waves-effect waves-light">
-    <span class="mdi mdi-plus-thick"></span>
-  </a>
-  @endcan
+  <div class="">
+    @can('depot-nouveau')
+    <a href="{{ route('depot.create') }}" class="btn btn-brown px-4 waves-effect waves-light">
+      <span class="mdi mdi-plus-thick"></span>
+    </a>
+    @endcan
+    <a href="{{ route('depot.example') }}" class="btn btn-brown px-4 waves-effect waves-light">
+      example
+    </a>
+    <button type="button" class="btn btn-darkLight waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#import"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="suppression">
+      importer
+     </button>
+     <div class="modal fade" id="import" tabindex="-1" aria-labelledby="varyingModalLabel" aria-hidden="true">
+       <div class="modal-dialog modal-md modal-dialog-centered">
+         <div class="modal-content">
+           <div class="modal-body p-3">
+             <form action="{{ route('depot.importer') }}" method="POST" enctype="multipart/form-data">
+               @csrf
+               <h6 class="title text-center mb-2">
+                 importaiton fiche excel
+               </h6>
+               <div class="form-group mb-2">
+                 <label for="" class="form-label">
+                   fiche excel
+                 </label>
+                 <input type="file" name="file" class="form-control" id="">
+
+               </div>
+               <div class="row justify-content-center">
+                 <div class="col-6">
+                   <button type="submit" class="btn btn-vert waves-effect waves-light fw-bolder py-2 w-100">
+                     Je confirme
+                   </button>
+                 </div>
+                 <div class="col-6">
+                   <button type="button" class="btn btn-orange px-5 waves-effect waves-light w-100" data-bs-dismiss="modal" aria-label="btn-close">
+                       Annuler
+                   </button>
+                 </div>
+               </div>
+             </form>
+           </div>
+         </div>
+       </div>
+     </div>
+  </div>
 </div>
 <div class="card">
   <div class="card-body p-2">

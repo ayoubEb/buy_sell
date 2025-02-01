@@ -23,7 +23,6 @@ class StockSeeder extends Seeder
         Stock::create([
           "produit_id" => $i,
           "num"        => "STO00-".$i,
-          "initial"    => 1,
           "disponible"     => 100,
           "min"        => 1,
           "qte_alert"=>5,

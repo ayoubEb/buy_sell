@@ -19,6 +19,7 @@ class ProduitSeeder extends Seeder
       for($i = 1 ; $i <= 4 ; $i++)
       {
        Produit::create([
+          "categorie_id"=>1,
           'reference'    => 'LM-601'.$i,
           'designation'  => 'MICROPHONES',
           'description'  => 'BETA DYNAMIC MICROPHONE',

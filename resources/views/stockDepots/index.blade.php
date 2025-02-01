@@ -3,10 +3,11 @@
   liste des stocks ( depôts )
 @endsection
 @section('content')
-
+<div class="d-flex justify-content-between align-items-center">
   <h4 class="title-header">
     liste des stocks ( depôts )
   </h4>
+</div>
   <div class="card">
     <div class="card-body p-2">
       @include('layouts.session')

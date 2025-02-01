@@ -4,9 +4,12 @@ Liste des stocks
 
 @endsection
 @section('content')
-  <h6 class="title-header">
+<div class="d-flex justify-content-between">
+  <h6 class="title-header m-0">
     liste des stocks
   </h6>
+
+</div>
   <div class="card">
     <div class="card-body p-2">
       @include('layouts.session')
@@ -123,7 +126,7 @@ Liste des stocks
                                     <label for="" class="form-label">Quantité</label>
                                     <input type="number" name="qte_add" id="" min="1" class="form-control" required>
                                   </div>
-                                  @if (count($produit->depots) > 0)
+                                  @if (isset($produit->depots) && (count($produit->depots) > 0))
                                     <div class="form-group mb-2">
                                       <label for="" class="form-label">depôt</label>
                                       <select name="depot_add" id="" class="form-select">
@@ -174,7 +177,7 @@ Liste des stocks
                                     <label for="" class="form-label">Quantié</label>
                                     <input type="number" name="qte_demi" id="" min="1" max="{{ $produit->reste }}" class="form-control" required>
                                   </div>
-                                  @if (count($produit->depots) > 0)
+                                  @if ( isset($produit->depots) && count($produit->depots) > 0)
                                     <div class="form-group mb-2">
                                       <label for="" class="form-label">depôt</label>
                                       <select name="depot_add" id="" class="form-select">

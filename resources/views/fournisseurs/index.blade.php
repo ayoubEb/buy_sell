@@ -5,11 +5,19 @@
   <h4 class="title-header">
     liste des fournisseurs
   </h4>
-  @can('fournisseur-nouveau')
-    <a href="{{ route('fournisseur.create') }}" class="btn btn-brown px-4 waves-effect waves-light">
-      <span class="mdi mdi-plus-thick"></span>
-    </a>
-  @endcan
+  <div class="">
+    @can('fournisseur-nouveau')
+      <a href="{{ route('fournisseur.create') }}" class="btn btn-brown px-4 waves-effect waves-light">
+        <span class="mdi mdi-plus-thick"></span>
+      </a>
+      @endcan
+      <a href="{{ route('fournisseur.example') }}" class="btn btn-brown px-4 waves-effect waves-light">
+        example
+      </a>
+      <a href="{{ route('fournisseur.importer') }}" class="btn btn-darkLight px-4 waves-effect waves-light">
+        importer
+      </a>
+  </div>
 </div>
 <div class="card">
   <div class="card-body p-2">

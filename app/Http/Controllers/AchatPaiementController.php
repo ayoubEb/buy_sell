@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AchatPaiementCsv;
+use App\Exports\AchatPaiementXlsx;
 use App\Models\AchatCheque;
 use App\Models\AchatPaiement;
 use App\Models\Entreprise;
 use App\Models\Fournisseur;
 use App\Models\LigneAchat;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AchatPaiementController extends Controller
 {
@@ -258,4 +262,19 @@ class AchatPaiementController extends Controller
   }
 
 
+  public function exportXlsx(){
+    return Excel::download(new AchatPaiementXlsx, 'achatPaiements.xlsx');
+  }
+  public function exportCsv(){
+    return Excel::download(new AchatPaiementCsv, 'achatPaiements.csv');
+  }
+
+
+  public function document()
+  {
+    $achatPaiements = AchatPaiement::select("id","ligne_achat_id","statut","num","numero_operation" , "date_paiement","type_paiement")->get();
+    $all      = [ "achatPaiements" => $achatPaiements ];
+    $pdf      = Pdf::loadview('achatPaiements.document',$all);
+    return $pdf->stream("achatPaiements");
+  }
 }

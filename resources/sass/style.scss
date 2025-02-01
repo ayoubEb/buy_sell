@@ -3,8 +3,9 @@
   text-transform: uppercase;
   letter-spacing: .8px;
   font-weight   : 500;
-  padding       : .5rem 2rem;
+  padding       : .35rem 1rem;
   font-size     : 12px;
+  color: white !important;
 }
 
 .p-icon{
@@ -13,22 +14,23 @@
 .btn-brown{
   @extend .btn-customize;
   background: $color-brown !important;
-  color: white !important;
+  border:1px solid $color-brown !important;
 }
 .btn-vert{
   @extend .btn-customize;
   background: $color-vert!important;
-  color: white !important;
+  border:1px solid $color-vert !important;
 }
 .btn-orange{
   @extend .btn-customize;
   background: $color-orange !important;
-  color: white !important;
+  border:1px solid $color-orange !important;
+
 }
 .btn-darkLight{
   @extend .btn-customize;
   background: $color-darkLight !important;
-  color: white !important;
+  border:1px solid $color-darkLight !important;
 }
 .btn-brown-outline{
   @extend .btn-customize;
@@ -160,7 +162,6 @@ table.info{
   tbody{
     td{
       font-weight   : 500;
-      // color         : black;
       text-transform: uppercase;
       font-size     : smaller;
       letter-spacing: .5px;
@@ -191,7 +192,15 @@ table.info{
   }
 }
 
-
+.table-doc
+{
+  span{
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing:.7px;
+  }
+}
 
 
 .list-group{

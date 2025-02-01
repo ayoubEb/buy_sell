@@ -25,7 +25,6 @@ return new class extends Migration
             $table->integer("min")->default(0);
             $table->integer("sortie")->default(0);
             $table->integer("max")->default(0);
-            $table->integer("initial")->default(0);
             $table->integer('qte_achat')->default(0);
             $table->integer('qte_alert')->default(0);
             $table->integer('qte_vente')->default(0);

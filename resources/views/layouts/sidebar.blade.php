@@ -143,6 +143,18 @@
                         </li>
                         @endcanany
 
+                            <li>
+                              <a href="{{ route('document.index') }}" class=" waves-effect item">
+                                  <i class="dripicons-device-desktop"></i>
+                                  <span>documents</span>
+                              </a>
+                            </li>
+                            <li>
+                              <a href="{{ route('export.index') }}" class=" waves-effect item">
+                                  <i class="dripicons-device-desktop"></i>
+                                  <span>exports</span>
+                              </a>
+                            </li>
 
                             <li>
                               <a href="{{ route('rapportAchat.index') }}" class=" waves-effect">
@@ -170,17 +182,7 @@
                                         </a>
                                       </li>
                                     @endcan
-                                    @can('comptoir-list')
-                                      <li class="{{ Route::currentRouteName() === 'comptoir.edit' ||
-                                        Route::currentRouteName() === 'comptoir.show' ||
-                                        Route::currentRouteName() === 'comptoir.create' ||
-                                        Route::currentRouteName() === 'comptoir.index' ? 'mm-active':''
-                                        }}">
-                                        <a href="{{ route('comptoir.index') }}" class="item-link">
-                                          comptoir
-                                        </a>
-                                      </li>
-                                    @endcan
+
                                     @can('depot-list')
                                       <li class="{{ Route::currentRouteName() === 'depot.edit' ||
                                         Route::currentRouteName() === 'depot.show' ||

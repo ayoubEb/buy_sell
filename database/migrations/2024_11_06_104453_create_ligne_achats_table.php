@@ -32,7 +32,7 @@ return new class extends Migration
             $table->double('payer')->default(0);
             $table->double('mt_tva')->default(0);
             $table->double('reste')->default(0);
-            $table->string('mois')->nullable();
+            $table->string('mois')->default(date("m-Y"));
             $table->text('commentaire')->nullable();
             $table->datetime("deleted_at")->nullable();
             $table->timestamps();

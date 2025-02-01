@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LigneAchatCsv;
+use App\Exports\LigneAchatXlsx;
 use App\Models\Achat;
 use App\Models\Entreprise;
 use App\Models\Fournisseur;
@@ -15,6 +17,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+
 class LigneAchatController extends Controller
 {
 
@@ -117,12 +121,13 @@ class LigneAchatController extends Controller
       }
       $ht  = DB::table("achats")->where("ligne_achat_id",$ligne->id)->whereNull("deleted_at")->sum("montant");
       $ttc = $ht  + ($ht * ($tva/100));
+      $ht_tva = $ht * ($tva / 100);
       $ligne->update([
           "ttc"    => $ttc,
           "ht"     => $ht,
           "payer"  => 0,
           "reste"  => $ttc,
-          "mt_tva" => $ttc - $ht,
+          "mt_tva" => $ht_tva,
       ]);
       $this->updateFournisseur($ligne->id);
     }
@@ -344,5 +349,23 @@ class LigneAchatController extends Controller
     ];
     $pdf = Pdf::loadview('ligneAchats.bonCmd',$all);
     return $pdf->stream("bon commande|" . $ligneAchat->num_achat);
+  }
+
+
+
+  public function exportXlsx(){
+    return Excel::download(new LigneAchatXlsx, 'ligneAchats.xlsx');
+  }
+  public function exportCsv(){
+    return Excel::download(new LigneAchatCsv, 'ligneAchats.csv');
+  }
+
+  public function document()
+  {
+    $ligneAchats = LigneAchat::select("id","fournisseur_id","num_achat","statut","ht","ttc" , "net_payer","taux_tva" , "nombre_achats" , "date_achat" , "datePaiement" , "dateCreation" , "payer" ,"mt_tva","reste","mois")->get();
+    $all      = [ "ligneAchats" => $ligneAchats ];
+    $pdf      = Pdf::loadview('ligneAchats.document',$all);
+    $pdf->setPaper("a4","landscape");
+    return $pdf->stream("ligneAchats");
   }
 }

@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CategorieCsv;
+use App\Exports\CategorieExample;
+use App\Exports\Categories\ExportCsv;
+use App\Exports\CategorieXlsx;
 use App\Http\Requests\CategorieRequest;
+use App\Imports\CategorieImport;
 use App\Models\Categorie;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Validation\Rule;
-use Spatie\Activitylog\Models\Activity;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategorieController extends Controller
 {
@@ -224,27 +228,39 @@ class CategorieController extends Controller
   }
 
 
-  // function setEnvValue($key, $value)
-  // {
-  //     $path = base_path('.env');
+  public function exportCsv(){
+    return Excel::download(new CategorieCsv, 'categories.csv');
+  }
+  public function exportXlsx(){
+    return Excel::download(new CategorieXlsx, 'categories.xlsx');
+  }
 
-  //     if (file_exists($path)) {
-  //         $content = file_get_contents($path);
-
-  //         // Replace existing key-value pair or add a new one
-  //         if (strpos($content, "{$key}=") !== false) {
-  //             $content = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $content);
-  //         } else {
-  //             $content .= "\n{$key}={$value}";
-  //         }
-
-  //         file_put_contents($path, $content);
-
-  //         // Clear config cache to apply changes
+  public function example(){
+    $data = [
+      ['nom_1', 'description_1'],
+      ['nom_2', 'description_2'],
+      ['nom_3', 'description_3'],
+    ];
+    return Excel::download(new CategorieExample($data), 'categories.xlsx');
+  }
 
 
-  //     }
-  // }
+  public function document()
+  {
+    $categories = Categorie::select("image","nom","description","created_at")->get();
+    $all        = [ "categories" => $categories ];
+    $pdf = Pdf::loadview('categories.document',$all);
+    return $pdf->stream("catégories");
+  }
+
+  public function import( Request $request )
+  {
+
+    Excel::import(new CategorieImport, $request->file);
+    return back();
+  }
+
+
 
 
 }

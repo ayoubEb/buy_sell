@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DepotCsv;
+use App\Exports\DepotExample;
+use App\Exports\DepotXlsx;
 use App\Models\Depot;
 use App\Models\Produit;
 use App\Models\StockDepot;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Spatie\Activitylog\Models\Activity;
-
+use Maatwebsite\Excel\Facades\Excel;
 class DepotController extends Controller
 {
   /**
@@ -189,5 +192,29 @@ class DepotController extends Controller
   {
     $depot->delete();
     return back()->with("success","La suppression de depôt effectuée");
+  }
+
+
+  public function exportXlsx(){
+    return Excel::download(new DepotXlsx, 'depôts.xlsx');
+  }
+  public function exportCsv(){
+    return Excel::download(new DepotCsv, 'depôts.csv');
+  }
+
+  public function example(){
+    $data = [
+      ['num_x', 'adresse_x'],
+      ['num_y', 'adresse_y'],
+    ];
+    return Excel::download(new DepotExample($data), 'depot_example.xlsx');
+  }
+
+  public function document()
+  {
+    $depots = Depot::select("num_depot","adresse","quantite","disponible","entre","statut","sortie","created_at")->get();
+    $all        = [ "depots" => $depots ];
+    $pdf = Pdf::loadview('depots.document',$all);
+    return $pdf->stream("depots");
   }
 }

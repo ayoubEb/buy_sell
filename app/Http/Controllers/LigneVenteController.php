@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LigneVenteCsv;
+use App\Exports\LigneVenteXlsx;
 use App\Models\Client;
 use App\Models\Entreprise;
 use App\Models\LigneVente;
@@ -15,6 +17,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+
 class LigneVenteController extends Controller
 {
   function __construct()
@@ -433,4 +437,19 @@ class LigneVenteController extends Controller
   }
 
 
+  public function exportXlsx(){
+    return Excel::download(new LigneVenteXlsx, 'ligneVentes.xlsx');
+  }
+  public function exportCsv(){
+    return Excel::download(new LigneVenteCsv, 'ligneVentes.csv');
+  }
+
+  public function document()
+  {
+    $ligneVentes = LigneVente::select("id","client_id","num","statut","ht","ttc" , "net_payer","taux_tva" , "nbrProduits" , "dateCommande" , "datePaiement" , "dateCreation" , "payer" ,"ht_tva","reste")->get();
+    $all      = [ "ligneVentes" => $ligneVentes ];
+    $pdf      = Pdf::loadview('ligneCommandes.document',$all);
+    $pdf->setPaper("a4","landscape");
+    return $pdf->stream("ligneVentes");
+  }
 }

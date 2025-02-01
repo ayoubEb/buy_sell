@@ -4,11 +4,19 @@
   <h4 class="title-header">
     liste des clients
   </h4>
-  @can('client-nouveau')
-    <a href="{{ route('client.create') }}" class="btn btn-brown px-4 waves-effect waves-light">
-      <span class="mdi mdi-plus-thick"></span>
-    </a>
-  @endcan
+  <div class="">
+    @can('client-nouveau')
+      <a href="{{ route('client.create') }}" class="btn btn-brown px-4 waves-effect waves-light">
+        <span class="mdi mdi-plus-thick"></span>
+      </a>
+      @endcan
+      <a href="{{ route('client.example') }}" class="btn btn-brown px-4 waves-effect waves-light">
+        example
+      </a>
+      <a href="{{ route('client.importer') }}" class="btn btn-darkLight px-4 waves-effect waves-light">
+        importer
+      </a>
+  </div>
 </div>
 <div class="card">
   <div class="card-body p-2">

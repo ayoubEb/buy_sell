@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FournisseurCsv;
+use App\Exports\FournisseurXlsx;
 use App\Http\Requests\FournisseurRequest;
 use App\Models\Fournisseur;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
+use Spatie\SimpleExcel\SimpleExcelWriter;
+use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Entity\Style\CellAlignment;
 class FournisseurController extends Controller
 {
   function __construct()
@@ -144,5 +151,23 @@ class FournisseurController extends Controller
   {
     $fournisseur->delete();
     return back();
+  }
+
+  public function exportXlsx(){
+    return Excel::download(new FournisseurXlsx, 'fournisseurs.xlsx');
+  }
+
+  public function exportCsv(){
+    return Excel::download(new FournisseurCsv, 'fournisseurs.csv');
+  }
+
+
+
+  public function document()
+  {
+    $fournisseurs = Fournisseur::select("identifiant","raison_sociale","adresse","ville","code_postal","ice","rc" , "telephone","fix" , "pays" , "email" , "montant" , "payer" , "reste" ,"montant_demande","created_at")->get();
+    $all      = [ "fournisseurs" => $fournisseurs ];
+    $pdf      = Pdf::loadview('fournisseurs.document',$all);
+    return $pdf->stream("fournisseurs");
   }
 }

@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TauxTvaCsv;
+use App\Exports\TauxTvaXlsx;
+use App\Exports\TvaExample;
+use App\Imports\TvaImport;
 use App\Models\TauxTva;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
-use Spatie\Activitylog\Models\Activity;
-
+use Maatwebsite\Excel\Facades\Excel;
 class TauxTvaController extends Controller
 {
   function __construct()
@@ -135,5 +137,36 @@ class TauxTvaController extends Controller
   {
     $tauxTva->delete();
     return back()->with("success","La suppression de taux tva effectuée");
+  }
+
+  public function exportXlsx(){
+    return Excel::download(new TauxTvaXlsx, 'tahx_tva.xlsx');
+  }
+  public function exportCsv(){
+    return Excel::download(new TauxTvaCsv, 'taux_tva.csv');
+  }
+  public function example(){
+    $data = [
+      ['tva_nomX' , "0" , "descriptionX"],
+      ['tva_nomY' , "0" , "descriptionY"],
+      ['tva_nomZ' , "0" , "descriptionZ"],
+    ];
+    // $produits = Produit::select("reference","designation","statut","check_depot","check_stock","description","prix_achat","prix_vente","prix_revient","created_at")->get();
+    return Excel::download(new TvaExample($data), 'example_tva.xlsx');
+  }
+
+  public function document()
+  {
+    $tauxTvas = TauxTva::select("valeur","nom","description")->get();
+    $all        = [ "tauxTvas" => $tauxTvas ];
+    $pdf = Pdf::loadview('tauxTva.document',$all);
+    return $pdf->stream("taux_tva");
+  }
+
+  public function import( Request $request )
+  {
+
+    Excel::import(new TvaImport, $request->file);
+    return back();
   }
 }

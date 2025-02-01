@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StockCsv;
+use App\Exports\StockXlsx;
 use App\Http\Requests\StockRequest;
 use App\Models\Depot;
 use App\Models\DepotSuivi;
 use App\Models\Produit;
 use App\Models\Stock;
 use App\Models\StockDepot;
-use App\Models\StockSuivi;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Activitylog\Models\Activity;
-
 class StockController extends Controller
 {
   function __construct()
@@ -34,9 +34,10 @@ class StockController extends Controller
   */
   public function index()
   {
-    $produits           = Produit::select("id","reference","designation","quantite")->paginate(10);
+    $produits           = Produit::select("id","reference","designation","quantite","check_stock")->paginate(10);
     foreach($produits as $produit){
-
+      if($produit->check_stock == 1)
+      {
         $stock = Stock::where("produit_id",$produit->id)->first();
         $produit->disponible = Stock::where("produit_id",$produit->id)->first()->disponible;
         $produit->depots           = $stock->depots()->get();
@@ -50,11 +51,13 @@ class StockController extends Controller
       else{
         $produit->disponible = 0;
       }
+
+      }
     }
     $produits_reference = Produit::select("reference")->get();
     $all = [
       "produits"   => $produits,
-      "depot_default"=>$depot_default,
+      "depot_default"=>$depot_default ?? [],
       "references" => $produits_reference,
     ];
 
@@ -250,4 +253,26 @@ class StockController extends Controller
     Session()->flash("success","La modification du stock effectuée");
     return redirect()->route('stock.index');
   }
+
+
+
+  public function exportXlsx(){
+    return Excel::download(new StockXlsx, 'stocks.xlsx');
+  }
+  public function exportCsv(){
+    return Excel::download(new StockCsv, 'stocks.csv');
+  }
+
+
+
+  public function document()
+  {
+    $stocks = Stock::select("produit_id","num","quantite","disponible","reste","min","max","date_stock","sortie","qte_alert","qte_achat","qte_vente","qte_augmenter","qte_achatRes","qte_venteRes")->get();
+    $all      = [ "stocks" => $stocks ];
+    $pdf      = Pdf::loadview('stocks.document',$all);
+    // $pdf->setPaper('a4', 'landscape');
+    $pdf->render();
+    return $pdf->stream("stocks");
+  }
+
 }

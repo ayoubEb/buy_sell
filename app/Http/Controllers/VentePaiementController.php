@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\VentePaiementCsv;
+use App\Exports\VentePaiementXlsx;
 use App\Models\Client;
 use App\Models\LigneVente;
 use App\Models\VenteCheque;
 use App\Models\VentePaiement;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 class VentePaiementController extends Controller
 {
@@ -258,5 +262,21 @@ class VentePaiementController extends Controller
       "reste"=>$mt_facture,
       "payer"=>$sum_payer
     ]);
+  }
+
+  public function exportXlsx(){
+    return Excel::download(new VentePaiementXlsx, 'ventePaiements.xlsx');
+  }
+  public function exportCsv(){
+    return Excel::download(new VentePaiementCsv, 'ventePaiements.csv');
+  }
+
+
+  public function document()
+  {
+    $ventePaiements = VentePaiement::select("id","ligne_vente_id","statut","num","numero_operation" , "date_paiement","type_paiement")->get();
+    $all      = [ "ventePaiements" => $ventePaiements ];
+    $pdf      = Pdf::loadview('ventePaiements.document',$all);
+    return $pdf->stream("ventePaiements");
   }
 }

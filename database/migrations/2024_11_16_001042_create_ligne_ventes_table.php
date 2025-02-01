@@ -21,7 +21,6 @@ return new class extends Migration
             $table->foreignIdFor(Entreprise::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('num')->unique()->nullable();
             $table->string('statut')->nullable();
-            // $table->boolean('etat_livraison')->default(0);
             $table->double('ht')->default(0);
             $table->double('ttc')->default(0);
             $table->double('ht_tva')->default(0);
@@ -37,9 +36,9 @@ return new class extends Migration
             $table->string("mois")->default(0);
             $table->text("commentaire")->nullable();
             $table->double("net_payer")->default(0);
-            $table->double("net_credit")->default(0);
             $table->integer("nbrProduits")->default(0);
             $table->integer("qteProduits")->default(0);
+            $table->string('mois')->default(date("m-Y"));
             $table->datetime("deleted_at")->nullable();
             $table->timestamps();
         });

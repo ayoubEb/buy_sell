@@ -84,7 +84,7 @@ Liste des commandes
                 </span>
               </td>
               <td class="align-middle">
-                {{ $commande->delai == 0 ? "aujourd'hui" : $commande_delai . ' jours' }}
+                {{ $commande->delai == 0 ? "aujourd'hui" : $commande->delai . ' jours' }}
               </td>
               <td class="align-middle">
                 <span @class([

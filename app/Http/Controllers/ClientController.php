@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ClientCsv;
+use App\Exports\ClientXlsx;
 use App\Models\Client;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+
 class ClientController extends Controller
 {
   function __construct()
@@ -190,6 +195,24 @@ class ClientController extends Controller
 
 
 
+    }
+
+
+
+    public function exportXlsx(){
+      return Excel::download(new ClientXlsx, 'clients.xlsx');
+    }
+
+    public function exportCsv(){
+      return Excel::download(new ClientCsv, 'clients.csv');
+    }
+
+    public function document()
+    {
+      $clients = Client::select("identifiant","raison_sociale","adresse","ville","code_postal","ice","rc" , "if_client" , "telephone" , "email" , "montant" , "payer" , "reste" ,"montant_devis","created_at")->get();
+      $all      = [ "clients" => $clients ];
+      $pdf      = Pdf::loadview('clients.document',$all);
+      return $pdf->stream("clients");
     }
 
 }

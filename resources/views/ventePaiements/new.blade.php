@@ -1,6 +1,5 @@
 @extends('layouts.master')
 @section('content')
-@include('ligneCommandes.minInfo',['id'=>$commande->id])
 <h6 class="title mb-1">
   nouveau paiement
 </h6>
